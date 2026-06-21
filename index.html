@@ -49,7 +49,17 @@
   .rule{width:60px;height:1px;background:var(--gold);margin:2.4em 0}
 
   /* ---- 序厅 ---- */
-  #hero{height:100vh;max-width:none;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0}
+  #hero{height:100vh;max-width:none;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0;overflow:hidden}
+  #hero.torch{cursor:none}
+  #torchCanvas{position:absolute;inset:0;z-index:6;pointer-events:none;display:none}
+  #hero.torch #torchCanvas{display:block}
+  #torchFlame{position:fixed;top:0;left:0;z-index:7;width:46px;height:64px;margin:-58px 0 0 -23px;pointer-events:none;
+    opacity:0;transition:opacity .4s;will-change:transform;filter:drop-shadow(0 0 26px rgba(255,150,40,.85)) drop-shadow(0 0 70px rgba(255,110,20,.5))}
+  #torchFlame .fl{transform-origin:50% 100%;animation:flick .12s infinite alternate}
+  @keyframes flick{from{transform:scaleY(1) scaleX(1) translateY(0)}to{transform:scaleY(1.12) scaleX(.92) translateY(-2px)}}
+  #torchHint{position:absolute;bottom:14vh;z-index:7;font-family:var(--sans);font-size:11px;letter-spacing:.4em;color:var(--gold-soft);
+    opacity:.0;transition:opacity 1s;pointer-events:none}
+  #hero.torch #torchHint{opacity:.7}
   #hero .halo{position:absolute;width:60vmax;height:60vmax;border-radius:50%;
     background:radial-gradient(circle, rgba(201,162,75,.18), rgba(111,174,154,.05) 40%, transparent 65%);
     animation:breathe 9s ease-in-out infinite}
@@ -175,7 +185,23 @@
     <h1>忘梦洞</h1>
     <div class="sub">THE CAVE OF FORGOTTEN DREAMS</div>
     <div class="scroll-hint">向 下 · 入 洞</div>
+    <canvas id="torchCanvas"></canvas>
+    <div id="torchHint" data-zh="举 起 火 把 · 照 亮 洞 口" data-en="RAISE THE TORCH · LIGHT THE MOUTH">举 起 火 把 · 照 亮 洞 口</div>
   </section>
+  <svg id="torchFlame" viewBox="0 0 46 64" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="fg" cx="50%" cy="70%" r="60%">
+        <stop offset="0%" stop-color="#fff6cf"/><stop offset="35%" stop-color="#ffd34d"/>
+        <stop offset="70%" stop-color="#ff7a18"/><stop offset="100%" stop-color="#c23a06"/>
+      </radialGradient>
+    </defs>
+    <rect x="20" y="40" width="6" height="24" rx="2" fill="#5b3a1d"/>
+    <rect x="18" y="38" width="10" height="6" rx="2" fill="#3a2614"/>
+    <g class="fl">
+      <path d="M23 2 C12 16 9 24 14 34 C16 39 30 39 32 34 C37 24 34 16 23 2 Z" fill="url(#fg)"/>
+      <path d="M23 14 C18 22 17 27 20 32 C22 35 24 35 26 32 C29 27 28 22 23 14 Z" fill="#fff3c4" opacity=".9"/>
+    </g>
+  </svg>
 
   <!-- 引文 -->
   <section>
@@ -440,6 +466,36 @@ document.getElementById('releaseBtn').addEventListener('click',()=>{
     inp.value='';
   },200);
 });
+
+/* ============ 火把 · 揭开黑暗 ============ */
+(function(){
+  if(!matchMedia('(pointer:fine)').matches) return;   // 触屏不启用
+  const hero=document.getElementById('hero');
+  const tc=document.getElementById('torchCanvas'), tx=tc.getContext('2d');
+  const flame=document.getElementById('torchFlame');
+  let tw,th;
+  function fill(){tx.globalCompositeOperation='source-over';tx.fillStyle='rgba(6,5,4,0.96)';tx.fillRect(0,0,tw,th);}
+  function size(){const r=hero.getBoundingClientRect();tw=tc.width=r.width;th=tc.height=r.height;fill();}
+  hero.classList.add('torch');
+  size();
+  addEventListener('resize',size);
+  function burn(x,y){
+    const R=140;
+    const g=tx.createRadialGradient(x,y,0,x,y,R);
+    g.addColorStop(0,'rgba(0,0,0,0.5)');
+    g.addColorStop(.55,'rgba(0,0,0,0.16)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    tx.globalCompositeOperation='destination-out';
+    tx.fillStyle=g; tx.beginPath(); tx.arc(x,y,R,0,7); tx.fill();
+  }
+  hero.addEventListener('pointermove',e=>{
+    const r=hero.getBoundingClientRect();
+    flame.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
+    flame.style.opacity=1;
+    burn(e.clientX-r.left, e.clientY-r.top);
+  });
+  hero.addEventListener('pointerleave',()=>{flame.style.opacity=0;});
+})();
 
 /* ---- 光尘粒子 ---- */
 const c=document.getElementById('dust'),x=c.getContext('2d');

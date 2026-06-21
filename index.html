@@ -74,19 +74,19 @@
   #quote{overflow:hidden}
   .cave-frieze{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:100vw;
     overflow:hidden;z-index:0;opacity:0;transition:opacity 2.4s ease;pointer-events:none}
-  .cave-frieze.lit{opacity:.42}
-  .cave-frieze .track{display:flex;width:max-content;height:100%;animation:slide 90s linear infinite;
+  .cave-frieze.lit{opacity:.82}
+  .cave-frieze .track{display:flex;width:max-content;height:100%;animation:slide 30s linear infinite;
     mix-blend-mode:screen}
   .cave-frieze .track img{height:100%;width:auto;display:block;flex:0 0 auto;
-    filter:grayscale(.25) sepia(.6) saturate(1.1) brightness(.62) contrast(1.05)}
+    filter:grayscale(.15) sepia(.4) saturate(1.15) brightness(.92) contrast(1.08)}
   @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   .cave-frieze::after{content:"";position:absolute;inset:0;
     background:linear-gradient(90deg,var(--ink),transparent 16%,transparent 84%,var(--ink)),
-               linear-gradient(rgba(10,9,8,.25),rgba(10,9,8,.55)),
-               radial-gradient(ellipse at center, transparent 45%, rgba(10,9,8,.65)),
+               linear-gradient(rgba(10,9,8,.12),rgba(10,9,8,.32)),
+               radial-gradient(ellipse at center, transparent 55%, rgba(10,9,8,.5)),
                radial-gradient(ellipse at 50% 40%, rgba(201,162,75,.10), transparent 60%)}
-  .frieze-credit{position:absolute;bottom:18px;right:24px;z-index:2;font-family:var(--sans);
-    font-size:10px;letter-spacing:.18em;color:var(--dust-dim);opacity:.6;max-width:60vw;text-align:right}
+  .frieze-credit{font-family:var(--sans);font-size:10px;line-height:1.8;letter-spacing:.14em;
+    color:var(--dust-dim);opacity:.5;text-align:center;max-width:780px;margin:0 auto;padding:0 8vw 8vh}
   #quote blockquote{position:relative;z-index:1}
 
   /* ---- 引文 ---- */
@@ -232,8 +232,6 @@
         <img src="assets/chauvet-lions.jpg" alt="" aria-hidden="true" loading="lazy">
       </div>
     </div>
-    <div class="frieze-credit" data-zh="图:肖维岩洞 马群·狮群壁画复制件(Anthropos 博物馆)· 摄影 HTO · 公有领域 · via Wikimedia Commons"
-         data-en="Chauvet horses & lions, museum replica (Anthropos, Brno) · photo by HTO · Public Domain · via Wikimedia Commons">图:肖维岩洞 马群·狮群壁画复制件(Anthropos 博物馆)· 摄影 HTO · 公有领域 · via Wikimedia Commons</div>
     <blockquote class="reveal"
       data-zh="“入此洞者,先卸其梦。<br>梦留于壁,人轻于风。”<cite>—— 洞口残碑·释文</cite>"
       data-en="“Who enters here first sets down his dreams.<br>The dream stays on the wall; the man, light as wind.”<cite>— Gloss on the broken stele at the mouth</cite>">
@@ -334,6 +332,8 @@
     data-en="WANGMENGDONG · DIGITAL EXHIBITION &nbsp;|&nbsp; a <span>fictional yet coherent</span> experiment in heritage curation &nbsp;|&nbsp; CURATED IN THE DARK">
     忘梦洞 · 数字特展 &nbsp;|&nbsp; 一座<span>虚构而自洽</span>的文化遗产策展实验 &nbsp;|&nbsp; CURATED IN THE DARK
   </footer>
+  <div class="frieze-credit" data-zh="图片说明:引文页背景为「肖维岩洞 马群·狮群壁画」复制件(法国 / 复制件藏于 Anthropos 博物馆,布尔诺)· 摄影 HTO · 公有领域(Public Domain)· 经 Wikimedia Commons"
+       data-en="Image note: the quote-page background shows the horses & lions of Chauvet Cave, France (museum replica at Anthropos, Brno) · photo by HTO · Public Domain · via Wikimedia Commons">图片说明:引文页背景为「肖维岩洞 马群·狮群壁画」复制件(法国 / 复制件藏于 Anthropos 博物馆,布尔诺)· 摄影 HTO · 公有领域(Public Domain)· 经 Wikimedia Commons</div>
 </div>
 
 <script>
@@ -499,13 +499,11 @@ document.getElementById('releaseBtn').addEventListener('click',()=>{
 /* ============ 引文出现 → 点亮肖维壁画横幅 ============ */
 (function(){
   const frieze=document.getElementById('caveFrieze');
-  const credit=document.querySelector('.frieze-credit');
   const q=document.querySelector('#quote blockquote');
   if(!frieze||!q)return;
-  credit.style.opacity='0';credit.style.transition='opacity 2.4s ease 1s';
   const io=new IntersectionObserver(es=>es.forEach(e=>{
     if(e.isIntersecting){
-      setTimeout(()=>{frieze.classList.add('lit');credit.style.opacity='.55';},900);
+      setTimeout(()=>{frieze.classList.add('lit');},900);
       io.disconnect();
     }
   }),{threshold:.5});

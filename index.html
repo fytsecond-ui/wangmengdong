@@ -74,13 +74,17 @@
   #quote{overflow:hidden}
   .cave-frieze{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:100vw;
     overflow:hidden;z-index:0;opacity:0;transition:opacity 2.4s ease;pointer-events:none}
-  .cave-frieze.lit{opacity:.5}
-  .cave-frieze .track{display:flex;width:200%;height:100%;animation:slide 70s linear infinite}
-  .cave-frieze .track svg{flex:0 0 50%;width:50%;height:100%}
+  .cave-frieze.lit{opacity:.42}
+  .cave-frieze .track{display:flex;width:max-content;height:100%;animation:slide 90s linear infinite;
+    mix-blend-mode:screen}
+  .cave-frieze .track img{height:100%;width:auto;display:block;flex:0 0 auto;
+    filter:grayscale(.25) sepia(.6) saturate(1.1) brightness(.62) contrast(1.05)}
   @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   .cave-frieze::after{content:"";position:absolute;inset:0;
-    background:linear-gradient(90deg,var(--ink),transparent 18%,transparent 82%,var(--ink)),
-               radial-gradient(ellipse at center, transparent 50%, rgba(10,9,8,.6))}
+    background:linear-gradient(90deg,var(--ink),transparent 16%,transparent 84%,var(--ink)),
+               linear-gradient(rgba(10,9,8,.25),rgba(10,9,8,.55)),
+               radial-gradient(ellipse at center, transparent 45%, rgba(10,9,8,.65)),
+               radial-gradient(ellipse at 50% 40%, rgba(201,162,75,.10), transparent 60%)}
   .frieze-credit{position:absolute;bottom:18px;right:24px;z-index:2;font-family:var(--sans);
     font-size:10px;letter-spacing:.18em;color:var(--dust-dim);opacity:.6;max-width:60vw;text-align:right}
   #quote blockquote{position:relative;z-index:1}
@@ -222,72 +226,14 @@
   <section id="quote">
     <div class="cave-frieze" id="caveFrieze">
       <div class="track">
-        <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <g id="friezeArt" fill="none" stroke="#d8c39a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <!-- ===== 群狮(左段) ===== -->
-              <g transform="translate(40,150)">
-                <!-- 狮 1 -->
-                <g>
-                  <path d="M0,70 C50,52 130,48 205,54 C235,56 262,52 286,40"/>
-                  <path d="M286,40 C300,34 312,40 316,54 C319,66 314,76 304,80 C298,82 292,80 288,76"/>
-                  <path d="M286,40 C284,30 288,22 296,20"/>
-                  <path d="M205,54 C212,90 224,118 240,150"/>
-                  <path d="M120,52 C124,92 132,120 144,150"/>
-                  <path d="M40,62 C44,96 50,120 60,148"/>
-                  <path d="M0,70 C-8,96 -6,120 4,146"/>
-                  <ellipse cx="300" cy="58" rx="3.5" ry="2.6" fill="#2a1d12" stroke="none"/>
-                  <path d="M308,66 C312,64 314,62 314,58" stroke-width="1.6"/>
-                </g>
-                <!-- 狮 2(叠后) -->
-                <g transform="translate(150,28)" opacity=".85">
-                  <path d="M0,70 C60,54 140,50 220,56 C250,58 276,52 300,40"/>
-                  <path d="M300,40 C314,33 326,40 330,55 C333,68 327,78 316,81"/>
-                  <path d="M300,40 C298,29 303,21 311,20"/>
-                  <ellipse cx="314" cy="58" rx="3.4" ry="2.5" fill="#2a1d12" stroke="none"/>
-                </g>
-                <!-- 狮 3(幼小,前景) -->
-                <g transform="translate(330,70) scale(.7)">
-                  <path d="M0,70 C50,54 120,52 188,58 C214,60 238,54 260,42"/>
-                  <path d="M260,42 C273,36 284,42 288,55 C291,67 285,77 275,80"/>
-                  <path d="M188,58 C194,92 204,118 216,148"/>
-                  <path d="M60,56 C64,92 70,120 80,148"/>
-                  <ellipse cx="272" cy="58" rx="4" ry="3" fill="#2a1d12" stroke="none"/>
-                </g>
-              </g>
-
-              <!-- ===== 叠绘马群(右段) ===== -->
-              <g transform="translate(660,90)">
-                <!-- 四个叠压的马头,自上而下斜列 -->
-                <g id="horse">
-                  <path d="M10,150 C24,96 50,60 104,44 C132,36 168,52 196,92"/>
-                  <path d="M196,92 C206,106 205,124 190,134 C176,142 162,138 150,150"/>
-                  <path d="M150,150 C128,150 92,162 70,180"/>
-                  <path d="M104,44 C100,22 108,8 122,6"/>
-                  <path d="M122,6 C128,18 126,34 118,44"/>
-                  <ellipse cx="158" cy="86" rx="4" ry="3" fill="#2a1d12" stroke="none"/>
-                  <path d="M196,92 C188,98 178,100 170,98" stroke-width="1.6"/>
-                  <path d="M60,70 C70,66 82,66 92,70 M64,84 C74,80 86,80 96,84 M70,100 C80,96 92,96 102,100" stroke-width="1.5" opacity=".8"/>
-                  <path d="M176,118 C182,116 188,116 192,120" fill="#2a1d12" opacity=".5"/>
-                </g>
-                <use href="#horse" transform="translate(70,70) scale(.92)" opacity=".9"/>
-                <use href="#horse" transform="translate(150,140) scale(.84)" opacity=".8"/>
-                <use href="#horse" transform="translate(230,200) scale(.74)" opacity=".7"/>
-                <!-- 远处暗示更多马身 -->
-                <path d="M40,250 C120,232 220,236 320,250" stroke-width="1.6" opacity=".5"/>
-                <path d="M60,272 C150,256 260,260 360,276" stroke-width="1.4" opacity=".4"/>
-              </g>
-            </g>
-          </defs>
-          <use href="#friezeArt"/>
-        </svg>
-        <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-          <use href="#friezeArt"/>
-        </svg>
+        <img src="assets/chauvet-horses-lions.jpg" alt="肖维岩洞 马群与狮群壁画(复制)" loading="lazy">
+        <img src="assets/chauvet-lions.jpg" alt="肖维岩洞 狮群壁画(复制)" loading="lazy">
+        <img src="assets/chauvet-horses-lions.jpg" alt="" aria-hidden="true" loading="lazy">
+        <img src="assets/chauvet-lions.jpg" alt="" aria-hidden="true" loading="lazy">
       </div>
     </div>
-    <div class="frieze-credit" data-zh="壁画形象致敬:法国肖维岩洞 · 狮群与马群(约 36,000 年前)· 本站为重绘示意"
-         data-en="After the cave art of Chauvet, France · lions & horses (~36,000 yrs) · redrawn homage">壁画形象致敬:法国肖维岩洞 · 狮群与马群(约 36,000 年前)· 本站为重绘示意</div>
+    <div class="frieze-credit" data-zh="图:肖维岩洞 马群·狮群壁画复制件(Anthropos 博物馆)· 摄影 HTO · 公有领域 · via Wikimedia Commons"
+         data-en="Chauvet horses & lions, museum replica (Anthropos, Brno) · photo by HTO · Public Domain · via Wikimedia Commons">图:肖维岩洞 马群·狮群壁画复制件(Anthropos 博物馆)· 摄影 HTO · 公有领域 · via Wikimedia Commons</div>
     <blockquote class="reveal"
       data-zh="“入此洞者,先卸其梦。<br>梦留于壁,人轻于风。”<cite>—— 洞口残碑·释文</cite>"
       data-en="“Who enters here first sets down his dreams.<br>The dream stays on the wall; the man, light as wind.”<cite>— Gloss on the broken stele at the mouth</cite>">

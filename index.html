@@ -42,6 +42,7 @@
   section{position:relative;padding:14vh 8vw;max-width:1100px;margin:0 auto}
   .kicker{font-family:var(--sans);font-size:12px;letter-spacing:.45em;color:var(--gold);text-transform:uppercase;margin-bottom:1.4em}
   h2{font-size:clamp(28px,4vw,52px);font-weight:500;letter-spacing:.08em;margin-bottom:.7em;color:var(--dust)}
+  .subhead{font-size:clamp(20px,2.4vw,30px);font-weight:500;letter-spacing:.06em;color:var(--gold-soft);margin:1.4em 0 .8em}
   p.lead{font-size:clamp(17px,1.6vw,21px);color:#d8cfba}
   p{margin-bottom:1.2em;color:#c4bba6}
   .reveal{opacity:0;transform:translateY(40px);transition:opacity 1.1s ease,transform 1.1s ease}
@@ -176,7 +177,7 @@
 <div id="progress"></div>
 
 <div id="controls">
-  <button id="sndBtn">🜂 环境音 <span class="wave"></span></button>
+  <button id="sndBtn">💧 滴水声 <span class="wave"></span></button>
   <button id="langBtn">EN</button>
 </div>
 
@@ -248,6 +249,13 @@
     <p class="reveal">地方志称其为“卸梦之所”。传说远古的部族相信,梦是灵魂在夜里偷偷溜出去欠下的债;债积得太多,人会在白昼里恍惚、衰老、忘记自己的名字。于是他们凿出这座洞,让人定期入内,把缠身的梦“说”给石壁听。壁吸了梦,人便清醒地活着。</p>
     <div class="rule reveal"></div>
     <p class="reveal">真伪已不可考。但洞壁上层层叠压、几乎覆满整个内室的刻画与色块,确实呈现出一种罕见的状态:它们不像在“记录”什么,更像在“倾倒”什么——无序、重复、彼此覆盖,如同无数个梦被反复说出又被新的梦盖住。</p>
+
+    <div class="rule reveal"></div>
+    <div class="subhead reveal">追问源头:绘画,是与时间的对话</div>
+    <p class="lead reveal">人类从未停止追问同一个问题——我们从何而来,生命的源头在哪里。而最早试图回答它的,不是文字,是画。</p>
+    <p class="reveal">在还没有文字的年代,智人已把目光投向生与死的边界。深洞被视作大地的子宫、幽冥的入口;人在最黑暗处画下野兽、孕育、狩猎与死亡(如本页前一幕的肖维岩洞)——那不是写生,而是一种追问:生命从何处涌出,又往何处回去。最早的壁画,是人类对“源头”最初的凝视。</p>
+    <p class="reveal">而一笔画在岩壁上,就脱离了画它的人。三万年后,我们举着光重新看见它,仍能读出那只手的迟疑与笃定。绘画于是成了一种奇异的对话——画的人对尚未到来的人说话,后来的人隔着难以想象的时间回望。它传递的不是信息,而是“曾有人在此、曾如此凝视”这件事本身。</p>
+    <p class="reveal">这正是一切壁画最深的功能:把易逝的生命,寄存进比生命漫长得多的石头里,交给时间保管,再由后人接手。忘梦洞延续的也是同一件事——无论把梦留下还是把梦卸下,人都在做同一个动作:向时间托付一点自己,相信会有人在另一头,接住。</p>
   </section>
 
   <!-- 发现 -->
@@ -365,6 +373,11 @@ const DICT={
 "在所有已知的洞窟遗产里,忘梦洞是异类。它不为居住、不为埋葬、不为修行,而据传——只为一件事:让人把梦交出来。":"Among all known cave heritage, Wangmengdong is an anomaly. Not for dwelling, not for burial, not for cultivation — but, so the legend goes, for one thing only: to make people give up their dreams.",
 "地方志称其为“卸梦之所”。传说远古的部族相信,梦是灵魂在夜里偷偷溜出去欠下的债;债积得太多,人会在白昼里恍惚、衰老、忘记自己的名字。于是他们凿出这座洞,让人定期入内,把缠身的梦“说”给石壁听。壁吸了梦,人便清醒地活着。":"Local gazetteers call it “the place of unburdening.” An ancient people believed dreams were debts the soul ran up sneaking out at night; let the debt pile too high and one grows dazed by day, ages, forgets one’s own name. So they carved this cave, entering it from time to time to “tell” their clinging dreams to the stone. The wall drank the dreams, and the people lived clear-headed.",
 "真伪已不可考。但洞壁上层层叠压、几乎覆满整个内室的刻画与色块,确实呈现出一种罕见的状态:它们不像在“记录”什么,更像在“倾倒”什么——无序、重复、彼此覆盖,如同无数个梦被反复说出又被新的梦盖住。":"Truth or not, none can say. Yet the carvings and color-fields layered over nearly the entire inner chamber do show a rare condition: they seem less to “record” than to “pour out” — disordered, repetitive, mutually overwriting, as if countless dreams were spoken again and again, each buried by the next.",
+"追问源头:绘画,是与时间的对话":"Seeking the source: painting as a dialogue with time",
+"人类从未停止追问同一个问题——我们从何而来,生命的源头在哪里。而最早试图回答它的,不是文字,是画。":"Humankind has never stopped asking the same question — where do we come from, where is the source of life? And the first attempt to answer it was not writing, but painting.",
+"在还没有文字的年代,智人已把目光投向生与死的边界。深洞被视作大地的子宫、幽冥的入口;人在最黑暗处画下野兽、孕育、狩猎与死亡(如本页前一幕的肖维岩洞)——那不是写生,而是一种追问:生命从何处涌出,又往何处回去。最早的壁画,是人类对“源头”最初的凝视。":"In an age before writing, Homo sapiens already turned toward the border between life and death. The deep cave was seen as the womb of the earth, a doorway to the underworld; in its darkest places people painted beasts, birth, the hunt and death (as in the Chauvet scene a moment ago) — not studies from life, but a question: from where does life well up, and to where does it return? The earliest murals are humanity’s first gaze upon the source.",
+"而一笔画在岩壁上,就脱离了画它的人。三万年后,我们举着光重新看见它,仍能读出那只手的迟疑与笃定。绘画于是成了一种奇异的对话——画的人对尚未到来的人说话,后来的人隔着难以想象的时间回望。它传递的不是信息,而是“曾有人在此、曾如此凝视”这件事本身。":"A single stroke laid on the rock breaks free of the hand that made it. Thirty thousand years on, we raise a light and see it again, and can still read that hand’s hesitation and resolve. Painting thus becomes a strange dialogue — the painter speaking to those not yet born, and those who come after looking back across unimaginable time. What it carries is not information, but the bare fact that someone was here, and once gazed like this.",
+"这正是一切壁画最深的功能:把易逝的生命,寄存进比生命漫长得多的石头里,交给时间保管,再由后人接手。忘梦洞延续的也是同一件事——无论把梦留下还是把梦卸下,人都在做同一个动作:向时间托付一点自己,相信会有人在另一头,接住。":"This is the deepest function of all cave art: to lodge a fleeting life inside stone far longer-lived than itself, to leave it in time’s keeping, and to be taken up by those who come after. Wangmengdong continues the very same thing — whether leaving a dream or setting one down, people perform a single gesture: entrusting a little of themselves to time, trusting that someone, at the other end, will catch it.",
 "一座关于遗忘的洞,自己也几乎被彻底遗忘。":"A cave about forgetting was itself very nearly forgotten.",
 "据传 · 上古":"Legend · Antiquity","中古 · 封":"Medieval · Sealed","近世 · 偶现":"Early Modern · Found","当代 · 测绘":"Present · Survey",
 "开凿":"Excavation","封口":"Sealing","偶现":"Rediscovery","测绘与建档":"Survey & Archiving",
@@ -384,7 +397,7 @@ const DICT={
 };
 // 富文本/属性元素另行处理
 function applyLang(){
-  document.querySelectorAll('.kicker,h2,.lead,.tl-item .yr,.tl-item h4,.tl-item p,nav a,.relic .tag,.relic .meta h3,.relic .meta p,#releaseBtn,.scroll-hint').forEach(el=>{
+  document.querySelectorAll('.kicker,h2,.subhead,.lead,section p,.tl-item .yr,.tl-item h4,nav a,.relic .tag,.relic .meta h3,.relic .meta p,#releaseBtn,.scroll-hint').forEach(el=>{
     if(!el.dataset.zh0){el.dataset.zh0=el.innerHTML;}
     const zhTxt=el.dataset.zh0.replace(/<[^>]+>/g,'').trim();
     if(lang==='en'&&DICT[zhTxt]!==undefined){el.textContent=DICT[zhTxt];}
@@ -442,42 +455,58 @@ addEventListener('keydown',e=>{if(e.key==='Escape')closeViewer();});
 // 自动微旋(未拖动时)
 setInterval(()=>{if(viewer.classList.contains('open')&&!dragging){ry+=.15;vRender();}},40);
 
-/* ============ 环境音(Web Audio 合成洞窟风鸣) ============ */
-let actx, sndOn=false, sndNodes=[];
+/* ============ 环境音 · 钟乳石滴水(带洞穴回声) ============ */
+let actx, sndOn=false, master=null, reverbIn=null, dripTimer=null, lowNodes=[];
 const sndBtn=document.getElementById('sndBtn'), waveEl=sndBtn.querySelector('.wave');
-function startSound(){
-  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
-  const master=actx.createGain(); master.gain.value=0; master.connect(actx.destination);
-  master.gain.linearRampToValueAtTime(.18, actx.currentTime+2);
-  // 低频持续音(drone)
-  [55,82.4,110].forEach((f,i)=>{
-    const o=actx.createOscillator(); o.type='sine'; o.frequency.value=f;
-    const g=actx.createGain(); g.gain.value=.5/(i+1);
-    const lfo=actx.createOscillator(); lfo.frequency.value=.05+i*.03;
-    const lg=actx.createGain(); lg.gain.value=.3; lfo.connect(lg); lg.connect(g.gain);
-    o.connect(g); g.connect(master); o.start(); lfo.start(); sndNodes.push(o,lfo);
-  });
-  // 风噪(滤波白噪)
-  const buf=actx.createBuffer(1,actx.sampleRate*2,actx.sampleRate); const d=buf.getChannelData(0);
-  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
-  const noise=actx.createBufferSource(); noise.buffer=buf; noise.loop=true;
-  const bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=600; bp.Q.value=1.5;
-  const ng=actx.createGain(); ng.gain.value=.12;
-  const nlfo=actx.createOscillator(); nlfo.frequency.value=.08;
-  const nlg=actx.createGain(); nlg.gain.value=300; nlfo.connect(nlg); nlg.connect(bp.frequency);
-  noise.connect(bp); bp.connect(ng); ng.connect(master); noise.start(); nlfo.start();
-  sndNodes.push(noise,nlfo);
-  sndNodes.master=master;
+function buildAudio(){
+  actx=new (window.AudioContext||window.webkitAudioContext)();
+  master=actx.createGain(); master.gain.value=0; master.connect(actx.destination);
+  // 洞穴回声:反馈延迟 + 低通,模拟石壁余响
+  reverbIn=actx.createGain();
+  const delay=actx.createDelay(1.0); delay.delayTime.value=.32;
+  const fb=actx.createGain(); fb.gain.value=.5;
+  const lp=actx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2000;
+  const wet=actx.createGain(); wet.gain.value=.55;
+  reverbIn.connect(delay); delay.connect(lp); lp.connect(fb); fb.connect(delay); lp.connect(wet); wet.connect(master);
+  // 极faint 的洞内低频空气感(非嗡鸣,仅垫底)
+  const o=actx.createOscillator(); o.type='sine'; o.frequency.value=48;
+  const og=actx.createGain(); og.gain.value=.04; o.connect(og); og.connect(master); o.start(); lowNodes.push(o);
 }
-function stopSound(){
-  if(!actx)return;
-  sndNodes.master.gain.linearRampToValueAtTime(0,actx.currentTime+1);
-  setTimeout(()=>{sndNodes.forEach(n=>{try{n.stop()}catch(e){}});sndNodes=[];},1100);
+function drip(){
+  if(!sndOn||!actx) return;
+  const t=actx.currentTime;
+  const f0=820+Math.random()*620;                 // 每滴音高略不同
+  const o=actx.createOscillator(); o.type='sine';
+  o.frequency.setValueAtTime(f0,t);
+  o.frequency.exponentialRampToValueAtTime(f0*.42,t+.13);  // 下滑 = 水滴的"嘀"
+  const g=actx.createGain();
+  g.gain.setValueAtTime(.0001,t);
+  g.gain.exponentialRampToValueAtTime(.55,t+.004);          // 极快起音
+  g.gain.exponentialRampToValueAtTime(.0008,t+.20);         // 短促衰减
+  o.connect(g); g.connect(master); g.connect(reverbIn);     // 直达 + 进回声
+  o.start(t); o.stop(t+.3);
+  // 偶尔来个轻微的"嗒"双滴
+  if(Math.random()<.18){const t2=t+.09+Math.random()*.06;
+    const o2=actx.createOscillator(); o2.type='sine';
+    o2.frequency.setValueAtTime(f0*1.1,t2); o2.frequency.exponentialRampToValueAtTime(f0*.5,t2+.1);
+    const g2=actx.createGain(); g2.gain.setValueAtTime(.0001,t2);
+    g2.gain.exponentialRampToValueAtTime(.3,t2+.004); g2.gain.exponentialRampToValueAtTime(.0008,t2+.16);
+    o2.connect(g2); g2.connect(master); g2.connect(reverbIn); o2.start(t2); o2.stop(t2+.25);}
+  dripTimer=setTimeout(drip, 1400+Math.random()*4200);       // 缓慢、不规则
+}
+function startSound(){ if(!actx) buildAudio();
+  master.gain.cancelScheduledValues(actx.currentTime);
+  master.gain.linearRampToValueAtTime(.5, actx.currentTime+1.5);
+  drip();
+}
+function stopSound(){ if(!actx) return;
+  clearTimeout(dripTimer);
+  master.gain.linearRampToValueAtTime(0, actx.currentTime+.8);
 }
 let waveT;
 sndBtn.addEventListener('click',()=>{
   sndOn=!sndOn; sndBtn.classList.toggle('on',sndOn);
-  if(sndOn){startSound(); let i=0; waveT=setInterval(()=>{waveEl.textContent='∿∼≈⌇'[i++%4];},220);}
+  if(sndOn){startSound(); let i=0; waveT=setInterval(()=>{waveEl.textContent=' ·:.·'[i++%5];},300);}
   else{stopSound(); clearInterval(waveT); waveEl.textContent='';}
 });
 

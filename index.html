@@ -43,6 +43,9 @@
   .kicker{font-family:var(--sans);font-size:12px;letter-spacing:.45em;color:var(--gold);text-transform:uppercase;margin-bottom:1.4em}
   h2{font-size:clamp(28px,4vw,52px);font-weight:500;letter-spacing:.08em;margin-bottom:.7em;color:var(--dust)}
   .subhead{font-size:clamp(20px,2.4vw,30px);font-weight:500;letter-spacing:.06em;color:var(--gold-soft);margin:1.4em 0 .8em}
+  .hand-fig{width:200px;margin:0 auto 1.6em;opacity:.5;filter:sepia(.45) saturate(1.2) brightness(1.05);display:block}
+  .hand-fig figcaption{font-family:var(--sans);font-size:10px;letter-spacing:.2em;color:var(--dust-dim);text-align:center;margin-top:.6em;filter:none;opacity:.8}
+  @media(min-width:760px){.hand-fig{float:right;width:230px;margin:.2em 0 1.4em 2.8em}}
   p.lead{font-size:clamp(17px,1.6vw,21px);color:#d8cfba}
   p{margin-bottom:1.2em;color:#c4bba6}
   .reveal{opacity:0;transform:translateY(40px);transition:opacity 1.1s ease,transform 1.1s ease}
@@ -180,6 +183,9 @@
   <button id="sndBtn">💧 滴水声 <span class="wave"></span></button>
   <button id="langBtn">EN</button>
 </div>
+<audio id="dripAudio" loop preload="none">
+  <source src="assets/cave-drips.flac" type="audio/flac">
+</audio>
 
 <div id="viewer">
   <span class="close">✕</span>
@@ -252,6 +258,38 @@
 
     <div class="rule reveal"></div>
     <div class="subhead reveal">追问源头:绘画,是与时间的对话</div>
+    <figure class="hand-fig reveal">
+      <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="spray" cx="50%" cy="62%" r="58%">
+            <stop offset="0%" stop-color="#b9542b"/><stop offset="55%" stop-color="#9c3f1f"/>
+            <stop offset="100%" stop-color="#9c3f1f" stop-opacity="0"/>
+          </radialGradient>
+          <mask id="handMask">
+            <rect width="200" height="250" fill="#fff"/>
+            <g fill="#000">
+              <ellipse cx="100" cy="170" rx="37" ry="33"/>
+              <rect x="73" y="100" width="15" height="80" rx="7.5" transform="rotate(-13 80 180)"/>
+              <rect x="92" y="90" width="15" height="90" rx="7.5" transform="rotate(-3 99 180)"/>
+              <rect x="110" y="97" width="15" height="83" rx="7.5" transform="rotate(7 117 180)"/>
+              <rect x="127" y="112" width="14" height="68" rx="7" transform="rotate(17 134 180)"/>
+              <rect x="56" y="142" width="14" height="54" rx="7" transform="rotate(-50 63 190)"/>
+            </g>
+          </mask>
+        </defs>
+        <g mask="url(#handMask)">
+          <ellipse cx="100" cy="160" rx="84" ry="98" fill="url(#spray)"/>
+          <g fill="#9c3f1f">
+            <circle cx="34" cy="120" r="2.4" opacity=".7"/><circle cx="168" cy="135" r="2" opacity=".6"/>
+            <circle cx="46" cy="64" r="1.8" opacity=".6"/><circle cx="150" cy="60" r="2.2" opacity=".7"/>
+            <circle cx="28" cy="190" r="1.6" opacity=".5"/><circle cx="176" cy="196" r="2" opacity=".55"/>
+            <circle cx="70" cy="38" r="1.5" opacity=".5"/><circle cx="120" cy="30" r="1.8" opacity=".5"/>
+            <circle cx="22" cy="150" r="1.4" opacity=".45"/><circle cx="182" cy="100" r="1.5" opacity=".45"/>
+          </g>
+        </g>
+      </svg>
+      <figcaption data-zh="手印壁画 · 手绘示意" data-en="Hand stencil · illustration">手印壁画 · 手绘示意</figcaption>
+    </figure>
     <p class="lead reveal">人类从未停止追问同一个问题——我们从何而来,生命的源头在哪里。而最早试图回答它的,不是文字,是画。</p>
     <p class="reveal">在还没有文字的年代,智人已把目光投向生与死的边界。深洞被视作大地的子宫、幽冥的入口;人在最黑暗处画下野兽、孕育、狩猎与死亡(如本页前一幕的肖维岩洞)——那不是写生,而是一种追问:生命从何处涌出,又往何处回去。最早的壁画,是人类对“源头”最初的凝视。</p>
     <p class="reveal">而一笔画在岩壁上,就脱离了画它的人。三万年后,我们举着光重新看见它,仍能读出那只手的迟疑与笃定。绘画于是成了一种奇异的对话——画的人对尚未到来的人说话,后来的人隔着难以想象的时间回望。它传递的不是信息,而是“曾有人在此、曾如此凝视”这件事本身。</p>
@@ -340,8 +378,8 @@
     data-en="WANGMENGDONG · DIGITAL EXHIBITION &nbsp;|&nbsp; a <span>fictional yet coherent</span> experiment in heritage curation &nbsp;|&nbsp; CURATED IN THE DARK">
     忘梦洞 · 数字特展 &nbsp;|&nbsp; 一座<span>虚构而自洽</span>的文化遗产策展实验 &nbsp;|&nbsp; CURATED IN THE DARK
   </footer>
-  <div class="frieze-credit" data-zh="图片说明:引文页背景为「肖维岩洞 马群·狮群壁画」复制件(法国 / 复制件藏于 Anthropos 博物馆,布尔诺)· 摄影 HTO · 公有领域(Public Domain)· 经 Wikimedia Commons"
-       data-en="Image note: the quote-page background shows the horses & lions of Chauvet Cave, France (museum replica at Anthropos, Brno) · photo by HTO · Public Domain · via Wikimedia Commons">图片说明:引文页背景为「肖维岩洞 马群·狮群壁画」复制件(法国 / 复制件藏于 Anthropos 博物馆,布尔诺)· 摄影 HTO · 公有领域(Public Domain)· 经 Wikimedia Commons</div>
+  <div class="frieze-credit" data-zh="图片:引文页背景为「肖维岩洞 马群·狮群壁画」复制件(藏于 Anthropos 博物馆,布尔诺)· 摄影 HTO · 公有领域 · via Wikimedia Commons。<br>声音:洞穴滴水录音「Water drips in Treak Cliff Cavern, Derbyshire」· 录制 Andy Mabbett · CC BY-SA 3.0 · via Wikimedia Commons。<br>手印壁画插图为本站手绘示意。"
+       data-en="Image: quote-page background — horses & lions of Chauvet Cave (museum replica, Anthropos, Brno) · photo by HTO · Public Domain · via Wikimedia Commons.<br>Sound: cave-drip recording “Water drips in Treak Cliff Cavern, Derbyshire” · by Andy Mabbett · CC BY-SA 3.0 · via Wikimedia Commons.<br>The hand-stencil illustration is an original drawing made for this site.">图片:引文页背景为「肖维岩洞 马群·狮群壁画」复制件(藏于 Anthropos 博物馆,布尔诺)· 摄影 HTO · 公有领域 · via Wikimedia Commons。<br>声音:洞穴滴水录音「Water drips in Treak Cliff Cavern, Derbyshire」· 录制 Andy Mabbett · CC BY-SA 3.0 · via Wikimedia Commons。<br>手印壁画插图为本站手绘示意。</div>
 </div>
 
 <script>
@@ -455,59 +493,30 @@ addEventListener('keydown',e=>{if(e.key==='Escape')closeViewer();});
 // 自动微旋(未拖动时)
 setInterval(()=>{if(viewer.classList.contains('open')&&!dragging){ry+=.15;vRender();}},40);
 
-/* ============ 环境音 · 钟乳石滴水(带洞穴回声) ============ */
-let actx, sndOn=false, master=null, reverbIn=null, dripTimer=null, lowNodes=[];
+/* ============ 环境音 · 真实洞穴滴水录音 ============ */
 const sndBtn=document.getElementById('sndBtn'), waveEl=sndBtn.querySelector('.wave');
-function buildAudio(){
-  actx=new (window.AudioContext||window.webkitAudioContext)();
-  master=actx.createGain(); master.gain.value=0; master.connect(actx.destination);
-  // 洞穴回声:反馈延迟 + 低通,模拟石壁余响
-  reverbIn=actx.createGain();
-  const delay=actx.createDelay(1.0); delay.delayTime.value=.32;
-  const fb=actx.createGain(); fb.gain.value=.5;
-  const lp=actx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2000;
-  const wet=actx.createGain(); wet.gain.value=.55;
-  reverbIn.connect(delay); delay.connect(lp); lp.connect(fb); fb.connect(delay); lp.connect(wet); wet.connect(master);
-  // 极faint 的洞内低频空气感(非嗡鸣,仅垫底)
-  const o=actx.createOscillator(); o.type='sine'; o.frequency.value=48;
-  const og=actx.createGain(); og.gain.value=.04; o.connect(og); og.connect(master); o.start(); lowNodes.push(o);
+const dripAudio=document.getElementById('dripAudio');
+let sndOn=false, fadeT=null, waveT;
+const MAXVOL=.85;
+function fadeTo(target,done){
+  clearInterval(fadeT);
+  fadeT=setInterval(()=>{
+    const v=dripAudio.volume;
+    if(Math.abs(v-target)<.04){dripAudio.volume=target;clearInterval(fadeT);if(done)done();return;}
+    dripAudio.volume=Math.min(1,Math.max(0, v+(target-v)*.14));
+  },50);
 }
-function drip(){
-  if(!sndOn||!actx) return;
-  const t=actx.currentTime;
-  const f0=820+Math.random()*620;                 // 每滴音高略不同
-  const o=actx.createOscillator(); o.type='sine';
-  o.frequency.setValueAtTime(f0,t);
-  o.frequency.exponentialRampToValueAtTime(f0*.42,t+.13);  // 下滑 = 水滴的"嘀"
-  const g=actx.createGain();
-  g.gain.setValueAtTime(.0001,t);
-  g.gain.exponentialRampToValueAtTime(.55,t+.004);          // 极快起音
-  g.gain.exponentialRampToValueAtTime(.0008,t+.20);         // 短促衰减
-  o.connect(g); g.connect(master); g.connect(reverbIn);     // 直达 + 进回声
-  o.start(t); o.stop(t+.3);
-  // 偶尔来个轻微的"嗒"双滴
-  if(Math.random()<.18){const t2=t+.09+Math.random()*.06;
-    const o2=actx.createOscillator(); o2.type='sine';
-    o2.frequency.setValueAtTime(f0*1.1,t2); o2.frequency.exponentialRampToValueAtTime(f0*.5,t2+.1);
-    const g2=actx.createGain(); g2.gain.setValueAtTime(.0001,t2);
-    g2.gain.exponentialRampToValueAtTime(.3,t2+.004); g2.gain.exponentialRampToValueAtTime(.0008,t2+.16);
-    o2.connect(g2); g2.connect(master); g2.connect(reverbIn); o2.start(t2); o2.stop(t2+.25);}
-  dripTimer=setTimeout(drip, 1400+Math.random()*4200);       // 缓慢、不规则
-}
-function startSound(){ if(!actx) buildAudio();
-  master.gain.cancelScheduledValues(actx.currentTime);
-  master.gain.linearRampToValueAtTime(.5, actx.currentTime+1.5);
-  drip();
-}
-function stopSound(){ if(!actx) return;
-  clearTimeout(dripTimer);
-  master.gain.linearRampToValueAtTime(0, actx.currentTime+.8);
-}
-let waveT;
 sndBtn.addEventListener('click',()=>{
   sndOn=!sndOn; sndBtn.classList.toggle('on',sndOn);
-  if(sndOn){startSound(); let i=0; waveT=setInterval(()=>{waveEl.textContent=' ·:.·'[i++%5];},300);}
-  else{stopSound(); clearInterval(waveT); waveEl.textContent='';}
+  if(sndOn){
+    dripAudio.volume=0;
+    dripAudio.play().catch(()=>{});
+    fadeTo(MAXVOL);
+    let i=0; waveT=setInterval(()=>{waveEl.textContent=' ·:.·'[i++%5];},300);
+  }else{
+    fadeTo(0,()=>dripAudio.pause());
+    clearInterval(waveT); waveEl.textContent='';
+  }
 });
 
 /* ---- 留梦交互(双语) ---- */

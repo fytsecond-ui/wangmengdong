@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>忘梦洞 · 一座关于遗忘的洞窟</title>
+<style>
+  :root{
+    --ink:#0a0908;
+    --ink-2:#13110e;
+    --dust:#e9e1cf;
+    --dust-dim:#9c9c8c;
+    --gold:#c9a24b;
+    --gold-soft:#e7c982;
+    --jade:#6fae9a;
+    --jade-deep:#2f5d52;
+    --rust:#a8482f;
+    --serif:"Songti SC","STSong","Noto Serif SC",serif;
+    --sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--dust);
+    font-family:var(--serif);
+    line-height:1.9;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---- 光尘 canvas ---- */
+  #dust{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55}
+  .wrap{position:relative;z-index:1}
+
+  /* ---- 进度与导航 ---- */
+  #progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--jade));width:0;z-index:50}
+  nav{position:fixed;top:0;right:0;padding:22px 30px;z-index:40;font-family:var(--sans);font-size:12px;letter-spacing:.18em}
+  nav a{color:var(--dust-dim);text-decoration:none;margin-left:18px;transition:color .3s}
+  nav a:hover{color:var(--gold-soft)}
+
+  /* ---- 通用 ---- */
+  section{position:relative;padding:14vh 8vw;max-width:1100px;margin:0 auto}
+  .kicker{font-family:var(--sans);font-size:12px;letter-spacing:.45em;color:var(--gold);text-transform:uppercase;margin-bottom:1.4em}
+  h2{font-size:clamp(28px,4vw,52px);font-weight:500;letter-spacing:.08em;margin-bottom:.7em;color:var(--dust)}
+  p.lead{font-size:clamp(17px,1.6vw,21px);color:#d8cfba}
+  p{margin-bottom:1.2em;color:#c4bba6}
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity 1.1s ease,transform 1.1s ease}
+  .reveal.in{opacity:1;transform:none}
+  .rule{width:60px;height:1px;background:var(--gold);margin:2.4em 0}
+
+  /* ---- 序厅 ---- */
+  #hero{height:100vh;max-width:none;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0}
+  #hero .halo{position:absolute;width:60vmax;height:60vmax;border-radius:50%;
+    background:radial-gradient(circle, rgba(201,162,75,.18), rgba(111,174,154,.05) 40%, transparent 65%);
+    animation:breathe 9s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.12);opacity:1}}
+  #hero h1{font-size:clamp(60px,14vw,180px);letter-spacing:.3em;font-weight:500;
+    text-indent:.3em;color:var(--dust);text-shadow:0 0 40px rgba(201,162,75,.25);position:relative}
+  #hero .sub{margin-top:1.6em;font-family:var(--sans);letter-spacing:.5em;font-size:13px;color:var(--gold-soft)}
+  #hero .scroll-hint{position:absolute;bottom:6vh;font-family:var(--sans);font-size:11px;letter-spacing:.4em;color:var(--dust-dim);animation:bob 2.4s infinite}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(8px);opacity:1}}
+
+  /* ---- 引文 ---- */
+  blockquote{font-size:clamp(22px,3vw,38px);line-height:1.6;color:var(--gold-soft);
+    font-weight:300;letter-spacing:.06em;border:none;text-align:center;padding:8vh 0}
+  blockquote cite{display:block;font-size:14px;font-family:var(--sans);letter-spacing:.3em;color:var(--dust-dim);margin-top:1.6em;font-style:normal}
+
+  /* ---- 文物卡 ---- */
+  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;margin-top:3em}
+  .relic{background:linear-gradient(160deg,var(--ink-2),#0c0b09);border:1px solid rgba(201,162,75,.18);
+    border-radius:4px;padding:0;overflow:hidden;cursor:pointer;transition:transform .5s,border-color .5s,box-shadow .5s}
+  .relic:hover{transform:translateY(-8px);border-color:rgba(201,162,75,.55);box-shadow:0 20px 50px rgba(0,0,0,.6)}
+  .relic .art{height:200px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#1a1712,#0a0908)}
+  .relic .art svg{width:120px;height:120px;filter:drop-shadow(0 0 16px rgba(201,162,75,.35))}
+  .relic .meta{padding:20px 22px}
+  .relic .meta .tag{font-family:var(--sans);font-size:10px;letter-spacing:.3em;color:var(--jade)}
+  .relic .meta h3{font-size:20px;font-weight:500;margin:.5em 0 .3em;color:var(--dust)}
+  .relic .meta p{font-size:13px;color:var(--dust-dim);margin:0}
+
+  /* ---- 仪式 / 奇观厅 ---- */
+  #ritual{max-width:none;text-align:center;padding:22vh 8vw;
+    background:radial-gradient(ellipse at 50% 50%, rgba(47,93,82,.22), transparent 60%)}
+  .glyph-ring{position:relative;width:min(70vw,520px);height:min(70vw,520px);margin:4vh auto}
+  .glyph-ring .ring{position:absolute;inset:0;border:1px solid rgba(201,162,75,.25);border-radius:50%}
+  .glyph-ring .ring:nth-child(1){animation:spin 40s linear infinite}
+  .glyph-ring .ring:nth-child(2){inset:14%;border-color:rgba(111,174,154,.3);animation:spin 28s linear infinite reverse}
+  .glyph-ring .ring:nth-child(3){inset:30%;border-style:dashed;animation:spin 60s linear infinite}
+  .glyph-ring .core{position:absolute;inset:40%;border-radius:50%;
+    background:radial-gradient(circle,var(--gold-soft),var(--rust) 70%,transparent);
+    filter:blur(2px);animation:breathe 6s ease-in-out infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---- 时间轴 ---- */
+  .timeline{margin-top:3em;border-left:1px solid rgba(201,162,75,.3);padding-left:30px}
+  .tl-item{margin-bottom:2.6em;position:relative}
+  .tl-item::before{content:"";position:absolute;left:-37px;top:8px;width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+  .tl-item .yr{font-family:var(--sans);letter-spacing:.2em;color:var(--jade);font-size:13px}
+  .tl-item h4{font-size:19px;font-weight:500;margin:.2em 0 .4em;color:var(--dust)}
+  .tl-item p{font-size:14px;margin:0;color:var(--dust-dim)}
+
+  /* ---- 尾厅交互 ---- */
+  #epilogue{max-width:none;text-align:center;padding:20vh 8vw}
+  #dreamInput{margin-top:2.4em;background:transparent;border:none;border-bottom:1px solid rgba(201,162,75,.4);
+    color:var(--gold-soft);font-family:var(--serif);font-size:20px;text-align:center;padding:.6em 1em;width:min(80vw,520px);outline:none}
+  #dreamInput::placeholder{color:var(--dust-dim)}
+  #releaseBtn{margin-top:2em;background:none;border:1px solid var(--gold);color:var(--gold-soft);
+    font-family:var(--sans);letter-spacing:.3em;font-size:12px;padding:14px 34px;border-radius:2px;cursor:pointer;transition:.4s}
+  #releaseBtn:hover{background:var(--gold);color:var(--ink)}
+  #echo{margin-top:3em;min-height:2em;color:var(--jade);font-size:18px;letter-spacing:.1em;opacity:0;transition:opacity 1s}
+  #echo.show{opacity:1}
+
+  footer{text-align:center;padding:8vh 8vw;color:var(--dust-dim);font-family:var(--sans);font-size:11px;letter-spacing:.3em}
+  footer span{color:var(--gold)}
+
+  /* ---- 控制台:音 / 语言 ---- */
+  #controls{position:fixed;top:18px;left:24px;z-index:45;display:flex;gap:10px;font-family:var(--sans)}
+  #controls button{background:rgba(10,9,8,.55);border:1px solid rgba(201,162,75,.35);color:var(--dust-dim);
+    font-size:11px;letter-spacing:.18em;padding:8px 13px;border-radius:2px;cursor:pointer;transition:.3s;backdrop-filter:blur(6px)}
+  #controls button:hover{color:var(--gold-soft);border-color:var(--gold)}
+  #controls button.on{color:var(--ink);background:var(--gold);border-color:var(--gold)}
+  #sndBtn .wave{display:inline-block;width:5px;text-align:left}
+
+  /* ---- 文物查看器(装置) ---- */
+  #viewer{position:fixed;inset:0;z-index:60;background:rgba(5,5,4,.92);backdrop-filter:blur(8px);
+    display:none;align-items:center;justify-content:center;flex-direction:column;opacity:0;transition:opacity .5s}
+  #viewer.open{display:flex;opacity:1}
+  #viewer .stage{width:min(60vw,420px);height:min(60vw,420px);perspective:1200px;cursor:grab;touch-action:none}
+  #viewer .stage:active{cursor:grabbing}
+  #viewer .obj{width:100%;height:100%;transform-style:preserve-3d;transition:transform .05s linear;
+    display:flex;align-items:center;justify-content:center}
+  #viewer .obj svg{width:62%;height:62%;filter:drop-shadow(0 0 40px rgba(201,162,75,.5))}
+  #viewer .vmeta{text-align:center;max-width:min(80vw,540px);margin-top:1.5em}
+  #viewer .vmeta .tag{font-family:var(--sans);font-size:11px;letter-spacing:.35em;color:var(--jade)}
+  #viewer .vmeta h3{font-size:28px;font-weight:500;margin:.4em 0;color:var(--dust)}
+  #viewer .vmeta p{font-size:14px;color:#9aa89f}
+  #viewer .hint{margin-top:1.4em;font-family:var(--sans);font-size:10px;letter-spacing:.3em;color:var(--dust-dim)}
+  #viewer .close{position:absolute;top:24px;right:30px;font-size:26px;color:var(--dust-dim);cursor:pointer;line-height:1}
+  #viewer .close:hover{color:var(--gold-soft)}
+  #viewer .platter{position:absolute;width:min(50vw,360px);height:40px;bottom:calc(50% - 30px);
+    border-radius:50%;background:radial-gradient(ellipse,rgba(201,162,75,.18),transparent 70%);filter:blur(4px)}
+
+  @media(max-width:600px){nav{display:none}#viewer .stage{width:80vw;height:80vw}}
+</style>
+</head>
+<body>
+<canvas id="dust"></canvas>
+<div id="progress"></div>
+
+<div id="controls">
+  <button id="sndBtn">🜂 环境音 <span class="wave"></span></button>
+  <button id="langBtn">EN</button>
+</div>
+
+<div id="viewer">
+  <span class="close">✕</span>
+  <div class="platter"></div>
+  <div class="stage"><div class="obj"></div></div>
+  <div class="vmeta"><div class="tag"></div><h3></h3><p></p></div>
+  <div class="hint" data-zh="拖动旋转 · 滚轮缩放 · 点击空白关闭" data-en="DRAG TO ROTATE · SCROLL TO ZOOM · CLICK OUT TO CLOSE">拖动旋转 · 滚轮缩放 · 点击空白关闭</div>
+</div>
+<nav>
+  <a href="#origin">缘起</a>
+  <a href="#discovery">发现</a>
+  <a href="#hall">展厅</a>
+  <a href="#ritual">仪式</a>
+  <a href="#today">回响</a>
+  <a href="#epilogue">留梦</a>
+</nav>
+
+<div class="wrap">
+
+  <!-- 序厅 -->
+  <section id="hero">
+    <div class="halo"></div>
+    <h1>忘梦洞</h1>
+    <div class="sub">THE CAVE OF FORGOTTEN DREAMS</div>
+    <div class="scroll-hint">向 下 · 入 洞</div>
+  </section>
+
+  <!-- 引文 -->
+  <section>
+    <blockquote class="reveal"
+      data-zh="“入此洞者,先卸其梦。<br>梦留于壁,人轻于风。”<cite>—— 洞口残碑·释文</cite>"
+      data-en="“Who enters here first sets down his dreams.<br>The dream stays on the wall; the man, light as wind.”<cite>— Gloss on the broken stele at the mouth</cite>">
+      “入此洞者,先卸其梦。<br>梦留于壁,人轻于风。”
+      <cite>—— 洞口残碑·释文</cite>
+    </blockquote>
+  </section>
+
+  <!-- 缘起 -->
+  <section id="origin">
+    <div class="kicker reveal">第一厅 · 缘起</div>
+    <h2 class="reveal">一座专门用来“遗忘”的洞</h2>
+    <p class="lead reveal">在所有已知的洞窟遗产里,忘梦洞是异类。它不为居住、不为埋葬、不为修行,而据传——只为一件事:让人把梦交出来。</p>
+    <p class="reveal">地方志称其为“卸梦之所”。传说远古的部族相信,梦是灵魂在夜里偷偷溜出去欠下的债;债积得太多,人会在白昼里恍惚、衰老、忘记自己的名字。于是他们凿出这座洞,让人定期入内,把缠身的梦“说”给石壁听。壁吸了梦,人便清醒地活着。</p>
+    <div class="rule reveal"></div>
+    <p class="reveal">真伪已不可考。但洞壁上层层叠压、几乎覆满整个内室的刻画与色块,确实呈现出一种罕见的状态:它们不像在“记录”什么,更像在“倾倒”什么——无序、重复、彼此覆盖,如同无数个梦被反复说出又被新的梦盖住。</p>
+  </section>
+
+  <!-- 发现 -->
+  <section id="discovery">
+    <div class="kicker reveal">第二厅 · 发现</div>
+    <h2 class="reveal">它如何重新被人记起</h2>
+    <p class="lead reveal">一座关于遗忘的洞,自己也几乎被彻底遗忘。</p>
+    <div class="timeline">
+      <div class="tl-item reveal"><div class="yr">据传 · 上古</div><h4>开凿</h4><p>部族凿洞卸梦。无文字直接记载,仅见于后世口传与残碑。</p></div>
+      <div class="tl-item reveal"><div class="yr">中古 · 封</div><h4>封口</h4><p>一场不明灾变后,洞口被巨石与流沙封闭,部族迁散,“卸梦”之俗失传。</p></div>
+      <div class="tl-item reveal"><div class="yr">近世 · 偶现</div><h4>偶现</h4><p>采药人避雨误入,见满壁奇画,惊为“画了梦的洞”,“忘梦洞”之名始入笔记。</p></div>
+      <div class="tl-item reveal"><div class="yr">当代 · 测绘</div><h4>测绘与建档</h4><p>多学科联合勘察,确认其壁画的覆盖式叠绘形态在已知遗存中独一无二,列入数字化保护。</p></div>
+    </div>
+  </section>
+
+  <!-- 展厅:文物卡 -->
+  <section id="hall">
+    <div class="kicker reveal">第三厅 · 展厅</div>
+    <h2 class="reveal">逐件端详</h2>
+    <p class="lead reveal">六件代表性遗存。每一件,都是一个被石头收下的梦。点击端详。</p>
+    <div class="gallery">
+      <div class="relic reveal" data-detail="壁面以矿物青绿层层叠绘,新画覆旧画十余层。研究者称之为“梦的地层”——越往下,色越沉,梦越久。">
+        <div class="art"><svg viewBox="0 0 100 100"><g stroke="#6fae9a" fill="none" stroke-width="2"><path d="M10 70 Q30 30 50 60 T90 50"/><path d="M10 80 Q35 50 55 75 T92 65" opacity=".6"/><path d="M15 60 Q40 20 60 50" opacity=".4"/></g></svg></div>
+        <div class="meta"><div class="tag">壁画 · MURAL</div><h3>叠梦壁</h3><p>覆盖式叠绘 · 矿物青绿</p></div>
+      </div>
+      <div class="relic reveal" data-detail="一组掌印,大小不一,围成环形。或为入洞者“以手交梦”的仪式痕迹;掌心多有反复按压的磨光。">
+        <div class="art"><svg viewBox="0 0 100 100"><g fill="#c9a24b" opacity=".85"><path d="M50 30c-4 0-5 5-5 9v6h-2v-8c0-4-1-7-4-7s-4 3-4 7v12c0 12 6 20 15 20s15-8 15-20v-8c0-4-1-7-4-7s-4 3-4 7v4h-2v-6c0-4-1-9-4-9z"/></g></svg></div>
+        <div class="meta"><div class="tag">遗痕 · TRACE</div><h3>交梦掌印</h3><p>环形排布 · 掌心磨光</p></div>
+      </div>
+      <div class="relic reveal" data-detail="带孔石片,孔缘光滑。推测以绳系于洞顶,风过成声。或为“以声唤梦出窍”的器物——洞内至今有微弱风鸣。">
+        <div class="art"><svg viewBox="0 0 100 100"><g fill="none" stroke="#e7c982" stroke-width="2"><ellipse cx="50" cy="50" rx="26" ry="34"/><circle cx="50" cy="34" r="5" fill="#0a0908"/><path d="M50 12 V20" /></g></svg></div>
+        <div class="meta"><div class="tag">器物 · OBJECT</div><h3>鸣梦石</h3><p>悬挂吹奏 · 风鸣残响</p></div>
+      </div>
+      <div class="relic reveal" data-detail="刻满未释读符号的石碑残块。符号不重复者极少,疑非文字,而是“每个梦各一形”的记号系统。即洞口残碑出处。">
+        <div class="art"><svg viewBox="0 0 100 100"><g stroke="#c9a24b" stroke-width="2" fill="none"><rect x="28" y="14" width="44" height="72" rx="3"/><path d="M38 30h24M38 42h18M38 54h24M38 66h14" opacity=".8"/></g></svg></div>
+        <div class="meta"><div class="tag">铭刻 · STELE</div><h3>残碑</h3><p>未释符号 · 一梦一形</p></div>
+      </div>
+      <div class="relic reveal" data-detail="洞底凹槽存有矿物颜料结块:青绿、赭红、骨白。三色构成全洞用色基调,均取自洞窟所在山体。">
+        <div class="art"><svg viewBox="0 0 100 100"><g><circle cx="38" cy="44" r="16" fill="#2f5d52"/><circle cx="60" cy="42" r="14" fill="#a8482f" opacity=".9"/><circle cx="50" cy="62" r="13" fill="#e9e1cf" opacity=".85"/></g></svg></div>
+        <div class="meta"><div class="tag">材料 · PIGMENT</div><h3>三色颜料</h3><p>青绿·赭红·骨白</p></div>
+      </div>
+      <div class="relic reveal" data-detail="洞窟最深处的一面空壁,从未被绘过。研究者命名“留白壁”。一说留给最后一人;一说,有些梦不必交出。">
+        <div class="art"><svg viewBox="0 0 100 100"><rect x="22" y="20" width="56" height="60" rx="2" fill="none" stroke="#9c9c8c" stroke-width="1.5" stroke-dasharray="4 5"/></svg></div>
+        <div class="meta"><div class="tag">空间 · VOID</div><h3>留白壁</h3><p>从未绘制 · 深处尽头</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 仪式 / 奇观 -->
+  <section id="ritual">
+    <div class="kicker reveal">第四厅 · 仪式</div>
+    <h2 class="reveal">卸梦如何发生</h2>
+    <div class="glyph-ring reveal">
+      <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+      <div class="core"></div>
+    </div>
+    <p class="lead reveal" style="max-width:620px;margin:2em auto 0">据复原:入者于环形掌印处按手,鸣梦石起声,以声引梦;随后于壁上以指蘸三色,把梦“画”成一形,任其被下一个梦覆盖。仪式不留个人,只留叠层。</p>
+  </section>
+
+  <!-- 当代回响 -->
+  <section id="today">
+    <div class="kicker reveal">第五厅 · 回响</div>
+    <h2 class="reveal">一座古洞,对今天说了什么</h2>
+    <p class="lead reveal">忘梦洞的价值,或许不在于它“真的能卸梦”,而在于它把一种普遍的人类冲动凿成了空间:我们都想把太重的东西放下,又希望它被某处郑重地收着。</p>
+    <p class="reveal">在影像与记忆被无限留存、几乎无法遗忘的时代,这座专为遗忘而建的洞窟成了一种反向的提醒:遗忘不是损失,而是一种古老的、被设计过的清醒之术。</p>
+    <div class="rule reveal"></div>
+    <p class="reveal">目前,忘梦洞已完成毫米级三维扫描与色层分析,壁画的覆盖序列正被逐层数字“揭取”,以求在不损一笔的前提下,读出最底层、也最久远的那个梦。</p>
+  </section>
+
+  <!-- 尾厅:留梦 -->
+  <section id="epilogue">
+    <div class="kicker reveal">尾厅 · 留梦</div>
+    <h2 class="reveal">在离开前,卸下一个梦</h2>
+    <p class="lead reveal">按古俗,出洞者须留一梦于壁,方得轻身而归。<br>写下它,然后让它被收下。</p>
+    <input id="dreamInput" maxlength="60" placeholder="此处写下你想放下的一个梦……">
+    <br><button id="releaseBtn">交 给 石 壁</button>
+    <div id="echo"></div>
+  </section>
+
+  <footer
+    data-zh="忘梦洞 · 数字特展 &nbsp;|&nbsp; 一座<span>虚构而自洽</span>的文化遗产策展实验 &nbsp;|&nbsp; CURATED IN THE DARK"
+    data-en="WANGMENGDONG · DIGITAL EXHIBITION &nbsp;|&nbsp; a <span>fictional yet coherent</span> experiment in heritage curation &nbsp;|&nbsp; CURATED IN THE DARK">
+    忘梦洞 · 数字特展 &nbsp;|&nbsp; 一座<span>虚构而自洽</span>的文化遗产策展实验 &nbsp;|&nbsp; CURATED IN THE DARK
+  </footer>
+</div>
+
+<script>
+/* ---- 滚动进度 ---- */
+const prog=document.getElementById('progress');
+addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+});
+
+/* ---- reveal ---- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.18});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ============ 双语引擎 ============ */
+let lang='zh';
+// 纯文本元素:中文 -> 英文
+const DICT={
+"向 下 · 入 洞":"DESCEND · ENTER",
+"缘起":"Origin","发现":"Discovery","展厅":"Hall","仪式":"Ritual","回响":"Echoes","留梦":"Leave a Dream",
+"第一厅 · 缘起":"Hall I · Origin","第二厅 · 发现":"Hall II · Discovery","第三厅 · 展厅":"Hall III · Gallery",
+"第四厅 · 仪式":"Hall IV · Ritual","第五厅 · 回响":"Hall V · Echoes","尾厅 · 留梦":"Epilogue · Leave a Dream",
+"一座专门用来“遗忘”的洞":"A cave built only to forget",
+"它如何重新被人记起":"How it came to be remembered again",
+"逐件端详":"Examine each, up close",
+"卸梦如何发生":"How the unburdening happened",
+"一座古洞,对今天说了什么":"What an ancient cave says to today",
+"在离开前,卸下一个梦":"Before you leave, set down a dream",
+"在所有已知的洞窟遗产里,忘梦洞是异类。它不为居住、不为埋葬、不为修行,而据传——只为一件事:让人把梦交出来。":"Among all known cave heritage, Wangmengdong is an anomaly. Not for dwelling, not for burial, not for cultivation — but, so the legend goes, for one thing only: to make people give up their dreams.",
+"地方志称其为“卸梦之所”。传说远古的部族相信,梦是灵魂在夜里偷偷溜出去欠下的债;债积得太多,人会在白昼里恍惚、衰老、忘记自己的名字。于是他们凿出这座洞,让人定期入内,把缠身的梦“说”给石壁听。壁吸了梦,人便清醒地活着。":"Local gazetteers call it “the place of unburdening.” An ancient people believed dreams were debts the soul ran up sneaking out at night; let the debt pile too high and one grows dazed by day, ages, forgets one’s own name. So they carved this cave, entering it from time to time to “tell” their clinging dreams to the stone. The wall drank the dreams, and the people lived clear-headed.",
+"真伪已不可考。但洞壁上层层叠压、几乎覆满整个内室的刻画与色块,确实呈现出一种罕见的状态:它们不像在“记录”什么,更像在“倾倒”什么——无序、重复、彼此覆盖,如同无数个梦被反复说出又被新的梦盖住。":"Truth or not, none can say. Yet the carvings and color-fields layered over nearly the entire inner chamber do show a rare condition: they seem less to “record” than to “pour out” — disordered, repetitive, mutually overwriting, as if countless dreams were spoken again and again, each buried by the next.",
+"一座关于遗忘的洞,自己也几乎被彻底遗忘。":"A cave about forgetting was itself very nearly forgotten.",
+"据传 · 上古":"Legend · Antiquity","中古 · 封":"Medieval · Sealed","近世 · 偶现":"Early Modern · Found","当代 · 测绘":"Present · Survey",
+"开凿":"Excavation","封口":"Sealing","偶现":"Rediscovery","测绘与建档":"Survey & Archiving",
+"部族凿洞卸梦。无文字直接记载,仅见于后世口传与残碑。":"The people carve the cave to unburden dreams. No direct written record survives — only later oral tradition and a broken stele.",
+"一场不明灾变后,洞口被巨石与流沙封闭,部族迁散,“卸梦”之俗失传。":"After an unknown calamity the mouth is sealed by boulders and drifting sand; the people scatter and the rite of unburdening is lost.",
+"采药人避雨误入,见满壁奇画,惊为“画了梦的洞”,“忘梦洞”之名始入笔记。":"A herb-gatherer, sheltering from rain, stumbles in, sees the strange painted walls, calls it “the cave that painted dreams” — the name Wangmengdong first enters written notes.",
+"多学科联合勘察,确认其壁画的覆盖式叠绘形态在已知遗存中独一无二,列入数字化保护。":"A multidisciplinary survey confirms the overpainted, layered murals are unique among known remains, and places the site under digital conservation.",
+"六件代表性遗存。每一件,都是一个被石头收下的梦。点击端详。":"Six representative relics. Each one a dream the stone took in. Click to examine.",
+"壁画 · MURAL":"MURAL","遗痕 · TRACE":"TRACE","器物 · OBJECT":"OBJECT","铭刻 · STELE":"STELE","材料 · PIGMENT":"PIGMENT","空间 · VOID":"VOID",
+"叠梦壁":"Wall of Layered Dreams","交梦掌印":"Dream-Giving Handprints","鸣梦石":"Dream-Calling Stone","残碑":"The Broken Stele","三色颜料":"The Three Pigments","留白壁":"The Blank Wall",
+"覆盖式叠绘 · 矿物青绿":"Overpainted layers · mineral green","环形排布 · 掌心磨光":"Ring layout · polished palms","悬挂吹奏 · 风鸣残响":"Hung & sounded · lingering wind-song","未释符号 · 一梦一形":"Undeciphered marks · one form per dream","青绿·赭红·骨白":"Green · Ochre · Bone-white","从未绘制 · 深处尽头":"Never painted · the far end",
+"据复原:入者于环形掌印处按手,鸣梦石起声,以声引梦;随后于壁上以指蘸三色,把梦“画”成一形,任其被下一个梦覆盖。仪式不留个人,只留叠层。":"Reconstructed: the entrant presses a hand at the ring of prints, the dream-calling stone sounds, the sound draws the dream out; then, fingers dipped in the three pigments, the dream is “painted” into a single form on the wall, left to be covered by the next. The rite keeps no individual — only the layers.",
+"忘梦洞的价值,或许不在于它“真的能卸梦”,而在于它把一种普遍的人类冲动凿成了空间:我们都想把太重的东西放下,又希望它被某处郑重地收着。":"The value of Wangmengdong may lie not in whether it “truly unburdens dreams,” but in how it carves a universal human impulse into space: we all wish to put down what is too heavy, and to have it gravely kept somewhere.",
+"在影像与记忆被无限留存、几乎无法遗忘的时代,这座专为遗忘而建的洞窟成了一种反向的提醒:遗忘不是损失,而是一种古老的、被设计过的清醒之术。":"In an age when image and memory are stored without limit and almost nothing can be forgotten, this cave built for forgetting becomes an inverse reminder: forgetting is not loss, but an ancient, deliberately designed art of staying clear.",
+"目前,忘梦洞已完成毫米级三维扫描与色层分析,壁画的覆盖序列正被逐层数字“揭取”,以求在不损一笔的前提下,读出最底层、也最久远的那个梦。":"Today, Wangmengdong has been scanned in 3D to the millimeter and its color layers analyzed; the overpainting sequence is being digitally “lifted” layer by layer, so that — without harming a single stroke — the lowest and oldest dream may finally be read.",
+"按古俗,出洞者须留一梦于壁,方得轻身而归。写下它,然后让它被收下。":"By the old custom, who leaves the cave must leave one dream on the wall to return light of body. Write it — then let it be taken.",
+};
+// 富文本/属性元素另行处理
+function applyLang(){
+  document.querySelectorAll('.kicker,h2,.lead,.tl-item .yr,.tl-item h4,.tl-item p,nav a,.relic .tag,.relic .meta h3,.relic .meta p,#releaseBtn,.scroll-hint').forEach(el=>{
+    if(!el.dataset.zh0){el.dataset.zh0=el.innerHTML;}
+    const zhTxt=el.dataset.zh0.replace(/<[^>]+>/g,'').trim();
+    if(lang==='en'&&DICT[zhTxt]!==undefined){el.textContent=DICT[zhTxt];}
+    else{el.innerHTML=el.dataset.zh0;}
+  });
+  document.querySelectorAll('[data-zh][data-en]').forEach(el=>{el.innerHTML=el.getAttribute('data-'+lang);});
+  inp.placeholder = lang==='en' ? 'Write here a dream you wish to set down…' : '此处写下你想放下的一个梦……';
+  langBtn.textContent = lang==='en' ? '中' : 'EN';
+  document.documentElement.lang = lang==='en' ? 'en' : 'zh-CN';
+}
+const langBtn=document.getElementById('langBtn');
+langBtn.addEventListener('click',()=>{lang=lang==='zh'?'en':'zh';applyLang();});
+
+/* ============ 文物查看器(可旋转·可缩放) ============ */
+const RELIC_EN_DETAIL={
+"叠梦壁":"Mineral green, overpainted in some ten-odd layers, new over old. Researchers call it “the strata of dreams” — the deeper down, the darker the color, the older the dream.",
+"交梦掌印":"A set of handprints of varying size, arranged in a ring. Likely traces of an “giving the dream by hand” rite; the palms are worn smooth from repeated pressing.",
+"鸣梦石":"A pierced stone slab with a smoothed bore. Thought to have hung from the ceiling and sounded in the wind — perhaps an instrument to “call the dream out” by sound. A faint wind-song lingers in the cave still.",
+"残碑":"A fragment of stele carved with undeciphered signs. Almost no sign repeats — likely not writing, but a notation of “one form per dream.” The source of the stele gloss at the mouth.",
+"三色颜料":"Hardened mineral pigments found in a floor groove: green, ochre, bone-white. These three set the palette of the whole cave, all drawn from the mountain that holds it.",
+"留白壁":"A blank wall in the deepest part of the cave, never once painted. Researchers named it “the blank wall.” One account: left for the last person. Another: some dreams need not be given up.",
+};
+const viewer=document.getElementById('viewer'), vObj=viewer.querySelector('.obj'),
+      vTag=viewer.querySelector('.tag'), vH3=viewer.querySelector('.h3,h3'),
+      vP=viewer.querySelector('.vmeta p');
+let rx=-12, ry=24, zoom=1, dragging=false, px, py;
+function vRender(){vObj.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(${zoom})`;}
+document.querySelectorAll('.relic').forEach(r=>{
+  r.addEventListener('click',()=>{
+    const svg=r.querySelector('.art svg').cloneNode(true);
+    vObj.innerHTML=''; vObj.appendChild(svg);
+    const zhTitle=r.querySelector('.meta h3').dataset.zh0
+      ? r.querySelector('.meta h3').dataset.zh0.trim() : r.querySelector('.meta h3').textContent.trim();
+    const tagZh=(r.querySelector('.tag').dataset.zh0||r.querySelector('.tag').textContent).replace(/<[^>]+>/g,'').trim();
+    if(lang==='en'){
+      vTag.textContent=DICT[tagZh]||tagZh;
+      vH3.textContent=DICT[zhTitle]||zhTitle;
+      vP.textContent=RELIC_EN_DETAIL[zhTitle]||r.dataset.detail;
+    }else{
+      vTag.textContent=tagZh; vH3.textContent=zhTitle; vP.textContent=r.dataset.detail;
+    }
+    rx=-12; ry=24; zoom=1; vRender();
+    viewer.classList.add('open');
+  });
+});
+const stage=viewer.querySelector('.stage');
+stage.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;stage.setPointerCapture(e.pointerId);});
+stage.addEventListener('pointermove',e=>{if(!dragging)return;ry+=(e.clientX-px)*.5;rx-=(e.clientY-py)*.5;px=e.clientX;py=e.clientY;vRender();});
+stage.addEventListener('pointerup',()=>dragging=false);
+viewer.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.min(2.4,Math.max(.5,zoom-e.deltaY*.001));vRender();},{passive:false});
+function closeViewer(){viewer.classList.remove('open');}
+viewer.querySelector('.close').addEventListener('click',closeViewer);
+viewer.addEventListener('click',e=>{if(e.target===viewer)closeViewer();});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeViewer();});
+// 自动微旋(未拖动时)
+setInterval(()=>{if(viewer.classList.contains('open')&&!dragging){ry+=.15;vRender();}},40);
+
+/* ============ 环境音(Web Audio 合成洞窟风鸣) ============ */
+let actx, sndOn=false, sndNodes=[];
+const sndBtn=document.getElementById('sndBtn'), waveEl=sndBtn.querySelector('.wave');
+function startSound(){
+  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  const master=actx.createGain(); master.gain.value=0; master.connect(actx.destination);
+  master.gain.linearRampToValueAtTime(.18, actx.currentTime+2);
+  // 低频持续音(drone)
+  [55,82.4,110].forEach((f,i)=>{
+    const o=actx.createOscillator(); o.type='sine'; o.frequency.value=f;
+    const g=actx.createGain(); g.gain.value=.5/(i+1);
+    const lfo=actx.createOscillator(); lfo.frequency.value=.05+i*.03;
+    const lg=actx.createGain(); lg.gain.value=.3; lfo.connect(lg); lg.connect(g.gain);
+    o.connect(g); g.connect(master); o.start(); lfo.start(); sndNodes.push(o,lfo);
+  });
+  // 风噪(滤波白噪)
+  const buf=actx.createBuffer(1,actx.sampleRate*2,actx.sampleRate); const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const noise=actx.createBufferSource(); noise.buffer=buf; noise.loop=true;
+  const bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=600; bp.Q.value=1.5;
+  const ng=actx.createGain(); ng.gain.value=.12;
+  const nlfo=actx.createOscillator(); nlfo.frequency.value=.08;
+  const nlg=actx.createGain(); nlg.gain.value=300; nlfo.connect(nlg); nlg.connect(bp.frequency);
+  noise.connect(bp); bp.connect(ng); ng.connect(master); noise.start(); nlfo.start();
+  sndNodes.push(noise,nlfo);
+  sndNodes.master=master;
+}
+function stopSound(){
+  if(!actx)return;
+  sndNodes.master.gain.linearRampToValueAtTime(0,actx.currentTime+1);
+  setTimeout(()=>{sndNodes.forEach(n=>{try{n.stop()}catch(e){}});sndNodes=[];},1100);
+}
+let waveT;
+sndBtn.addEventListener('click',()=>{
+  sndOn=!sndOn; sndBtn.classList.toggle('on',sndOn);
+  if(sndOn){startSound(); let i=0; waveT=setInterval(()=>{waveEl.textContent='∿∼≈⌇'[i++%4];},220);}
+  else{stopSound(); clearInterval(waveT); waveEl.textContent='';}
+});
+
+/* ---- 留梦交互(双语) ---- */
+const echo=document.getElementById('echo'),inp=document.getElementById('dreamInput');
+document.getElementById('releaseBtn').addEventListener('click',()=>{
+  const v=inp.value.trim();
+  if(!v){inp.focus();return;}
+  echo.classList.remove('show');
+  setTimeout(()=>{
+    echo.textContent = lang==='en'
+      ? 'The wall has taken it. The dream you spoke is now the eleventh layer.'
+      : '石壁收下了。你说的那个梦,已成为第十一层。';
+    echo.classList.add('show');
+    inp.value='';
+  },200);
+});
+
+/* ---- 光尘粒子 ---- */
+const c=document.getElementById('dust'),x=c.getContext('2d');
+let W,H,ps=[];
+function size(){W=c.width=innerWidth;H=c.height=innerHeight;}
+size();addEventListener('resize',size);
+for(let i=0;i<70;i++)ps.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.3,s:Math.random()*.3+.05,o:Math.random()*.6+.2});
+(function loop(){
+  x.clearRect(0,0,W,H);
+  ps.forEach(p=>{
+    p.y-=p.s;p.x+=Math.sin(p.y/40)*.2;
+    if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}
+    x.beginPath();x.arc(p.x,p.y,p.r,0,7);
+    x.fillStyle='rgba(231,201,130,'+p.o+')';x.fill();
+  });
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

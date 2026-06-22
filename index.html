@@ -19,7 +19,11 @@
     --sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+  section{scroll-snap-align:start}
+  #hero{scroll-snap-align:start}
+  #hall{scroll-snap-align:none}            /* 漫游厅过高,不参与吸附 */
+  @media(prefers-reduced-motion:reduce){html{scroll-snap-type:none}}
   body{
     background:var(--ink);
     color:var(--dust);
@@ -98,17 +102,94 @@
     font-weight:300;letter-spacing:.06em;border:none;text-align:center;padding:8vh 0}
   blockquote cite{display:block;font-size:14px;font-family:var(--sans);letter-spacing:.3em;color:var(--dust-dim);margin-top:1.6em;font-style:normal}
 
-  /* ---- 文物卡 ---- */
-  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;margin-top:3em}
-  .relic{background:linear-gradient(160deg,var(--ink-2),#0c0b09);border:1px solid rgba(201,162,75,.18);
-    border-radius:4px;padding:0;overflow:hidden;cursor:pointer;transition:transform .5s,border-color .5s,box-shadow .5s}
-  .relic:hover{transform:translateY(-8px);border-color:rgba(201,162,75,.55);box-shadow:0 20px 50px rgba(0,0,0,.6)}
-  .relic .art{height:200px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#1a1712,#0a0908)}
-  .relic .art svg{width:120px;height:120px;filter:drop-shadow(0 0 16px rgba(201,162,75,.35))}
-  .relic .meta{padding:20px 22px}
-  .relic .meta .tag{font-family:var(--sans);font-size:10px;letter-spacing:.3em;color:var(--jade)}
-  .relic .meta h3{font-size:20px;font-weight:500;margin:.5em 0 .3em;color:var(--dust)}
-  .relic .meta p{font-size:13px;color:var(--dust-dim);margin:0}
+  /* ---- 第三厅 · 滚动驱动的横向洞壁漫游 ---- */
+  #hall{max-width:none;padding:0;overflow:visible}
+  .walk-intro{max-width:1100px;margin:0 auto;padding:16vh 8vw 2vh}
+  .walk-intro .lead{color:#d8cfba}
+  .walk-stage{position:relative;height:680vh}
+  .walk-sticky{position:sticky;top:0;height:100vh;overflow:hidden;perspective:1100px;
+    background:radial-gradient(ellipse at 50% 46%, #15120d, #060504 72%)}
+  .wall-bg{position:absolute;top:-8%;left:-10%;width:140%;height:116%;
+    background:url(assets/lascaux-wall.jpg) repeat-x center/auto 100%;
+    filter:grayscale(.45) sepia(.55) brightness(.34) contrast(1.12);opacity:.45;will-change:transform}
+  .wall-fog{position:absolute;inset:0;z-index:4;pointer-events:none;
+    background:radial-gradient(circle at 50% 47%, transparent 11%, rgba(6,5,4,.72) 40%, rgba(6,5,4,.97) 70%)}
+  .torch-glow{position:absolute;left:50%;top:47%;width:60vmin;height:60vmin;transform:translate(-50%,-50%);z-index:2;
+    background:radial-gradient(circle, rgba(232,176,86,.22), rgba(201,140,50,.06) 38%, transparent 64%);
+    pointer-events:none;animation:breathe 5s ease-in-out infinite}
+  .walk-track{position:absolute;top:0;left:0;height:100%;z-index:3;display:flex;align-items:center;gap:8vw;
+    padding:0 50vw;will-change:transform;transform-style:preserve-3d}
+  .station{position:relative;flex:0 0 auto;width:min(64vw,420px);cursor:pointer;text-align:center;
+    transition:filter .5s ease, transform .5s ease;filter:brightness(.42) saturate(.7) blur(.4px);transform:translateZ(-160px)}
+  .station:nth-child(odd){margin-top:-9vh}
+  .station:nth-child(3n){margin-top:7vh}
+  .station.active{filter:brightness(1.2) saturate(1.1) blur(0) drop-shadow(0 0 34px rgba(201,162,75,.45));transform:translateZ(0) scale(1.05)}
+  .station .num{position:absolute;top:-7vh;left:50%;transform:translateX(-50%);font-family:var(--serif);
+    font-size:clamp(80px,12vh,150px);color:rgba(201,162,75,.08);font-weight:500;z-index:-1;letter-spacing:0}
+  .station .art{height:min(42vh,330px);display:flex;align-items:center;justify-content:center}
+  .station .art svg{width:62%;height:62%;filter:drop-shadow(0 0 22px rgba(201,162,75,.3))}
+  .station .meta .tag{font-family:var(--sans);font-size:11px;letter-spacing:.34em;color:var(--jade)}
+  .station .meta h3{font-size:clamp(22px,2.6vw,30px);font-weight:500;margin:.4em 0 .25em;color:var(--dust)}
+  .station .meta p{font-size:13px;color:var(--dust-dim);margin:0}
+  .station .enter{display:inline-block;margin-top:1.1em;font-family:var(--sans);font-size:10px;letter-spacing:.3em;
+    color:var(--gold-soft);opacity:0;transition:opacity .5s;border-bottom:1px solid rgba(201,162,75,.4);padding-bottom:3px}
+  .station.active .enter{opacity:.85}
+  .walk-progress{position:absolute;left:50%;bottom:7vh;transform:translateX(-50%);z-index:5;width:42vw;max-width:520px;
+    height:1px;background:rgba(201,162,75,.18)}
+  .walk-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--jade))}
+  .walk-progress::after{content:attr(data-label);position:absolute;top:10px;left:0;width:100%;text-align:center;
+    font-family:var(--sans);font-size:10px;letter-spacing:.3em;color:var(--dust-dim)}
+  @media(max-width:640px){.station{width:78vw}.walk-stage{height:560vh}}
+
+  /* ---- 洞内铭文(关键句) ---- */
+  .inscription{font-size:clamp(23px,3.6vw,42px);line-height:1.5;font-weight:300;letter-spacing:.04em;
+    color:var(--gold-soft);text-align:center;max-width:16em;margin:1.8em auto;
+    text-shadow:0 0 34px rgba(201,162,75,.22)}
+  .inscription::before,.inscription::after{content:"";display:block;width:44px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:.7em auto}
+
+  /* ---- 考古札记(可展开,偏学术) ---- */
+  .note{max-width:760px;margin:3em auto 0;font-family:var(--sans)}
+  .note summary{cursor:pointer;color:var(--jade);font-size:13px;letter-spacing:.14em;list-style:none;
+    padding:12px 0;border-top:1px solid rgba(111,174,154,.22);transition:color .3s}
+  .note summary:hover{color:var(--gold-soft)}
+  .note summary::-webkit-details-marker{display:none}
+  .note summary::before{content:"＋ ";color:var(--gold)}
+  .note[open] summary::before{content:"－ "}
+  .note p{font-size:13px;color:var(--dust-dim);line-height:2;margin:.4em 0 1.4em}
+
+  /* ---- 入洞火把按钮 ---- */
+  #enterBtn{position:absolute;bottom:6vh;left:50%;transform:translateX(-50%);z-index:8;
+    background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;
+    font-family:var(--sans);color:var(--dust-dim);transition:color .4s}
+  #enterBtn .torch{width:30px;height:42px;filter:drop-shadow(0 0 8px rgba(255,150,40,.4));transition:filter .4s,transform .4s}
+  #enterBtn .torch .fl{transform-origin:50% 100%;animation:flick .14s infinite alternate}
+  #enterBtn .label{font-size:11px;letter-spacing:.4em;transition:color .4s}
+  #enterBtn .arrow{font-size:14px;animation:bob 2.2s infinite}
+  #enterBtn:hover{color:var(--gold-soft)}
+  #enterBtn:hover .torch{filter:drop-shadow(0 0 18px rgba(255,150,40,.95)) drop-shadow(0 0 40px rgba(255,110,20,.6));transform:scale(1.12)}
+  #enterBtn:hover .label{color:var(--gold-soft)}
+
+  /* ---- 滴水声 · 圆点波纹按钮 ---- */
+  #sndToggle{position:fixed;right:26px;bottom:26px;z-index:46;width:56px;height:56px;border-radius:50%;
+    background:rgba(10,9,8,.5);border:1px solid rgba(201,162,75,.38);backdrop-filter:blur(6px);
+    cursor:pointer;display:grid;place-items:center;transition:border-color .3s,box-shadow .3s}
+  #sndToggle:hover{border-color:var(--gold);box-shadow:0 0 22px rgba(201,162,75,.25)}
+  #sndToggle .drop{width:9px;height:9px;border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
+    background:var(--dust-dim);transition:background .4s}
+  #sndToggle.on .drop{background:var(--gold-soft);
+    transform:scale(calc(1 + var(--lvl,0) * 1.5));
+    box-shadow:0 0 calc(8px + var(--lvl,0) * 30px) rgba(231,201,130,.85)}
+  #sndToggle .ring{position:absolute;inset:0;margin:auto;width:14px;height:14px;border-radius:50%;
+    border:1px solid var(--gold-soft);opacity:0}
+  #sndToggle.on .ring{animation:ripple 2.8s ease-out infinite}
+  #sndToggle.on .ring:nth-child(3){animation-delay:.95s}
+  #sndToggle.on .ring:nth-child(4){animation-delay:1.9s}
+  @keyframes ripple{0%{transform:scale(1);opacity:.55}100%{transform:scale(3.6);opacity:0}}
+  #sndToggle::after{content:attr(data-tip);position:absolute;right:64px;top:50%;transform:translateY(-50%);
+    white-space:nowrap;font-family:var(--sans);font-size:10px;letter-spacing:.2em;color:var(--dust-dim);
+    opacity:0;transition:opacity .3s;pointer-events:none}
+  #sndToggle:hover::after{opacity:.85}
 
   /* ---- 仪式 / 奇观厅 ---- */
   #ritual{max-width:none;text-align:center;padding:22vh 8vw;
@@ -180,12 +261,15 @@
 <div id="progress"></div>
 
 <div id="controls">
-  <button id="sndBtn">💧 滴水声 <span class="wave"></span></button>
   <button id="langBtn">EN</button>
 </div>
 <audio id="dripAudio" loop preload="none">
   <source src="assets/cave-drips.flac" type="audio/flac">
 </audio>
+<button id="sndToggle" data-tip="洞穴滴水声" aria-label="环境音开关">
+  <span class="drop"></span>
+  <span class="ring"></span><span class="ring"></span><span class="ring"></span>
+</button>
 
 <div id="viewer">
   <span class="close">✕</span>
@@ -210,7 +294,15 @@
     <div class="halo"></div>
     <h1>忘梦洞</h1>
     <div class="sub">THE CAVE OF FORGOTTEN DREAMS</div>
-    <div class="scroll-hint">向 下 · 入 洞</div>
+    <button id="enterBtn" aria-label="入洞">
+      <svg class="torch" viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg">
+        <rect x="13" y="24" width="4" height="18" rx="1.5" fill="#5b3a1d"/>
+        <g class="fl"><path d="M15 1 C8 11 6 17 9.5 23 C11 26 19 26 20.5 23 C24 17 22 11 15 1 Z" fill="#ffb733"/>
+        <path d="M15 9 C11.5 15 11 18 13 22 C14 24 16 24 17 22 C19 18 18.5 15 15 9 Z" fill="#fff3c4"/></g>
+      </svg>
+      <span class="label scroll-hint" data-zh="向 下 · 入 洞" data-en="DESCEND · ENTER">向 下 · 入 洞</span>
+      <span class="arrow">↓</span>
+    </button>
     <canvas id="torchCanvas"></canvas>
     <div id="torchHint" data-zh="举 起 火 把 · 照 亮 洞 口" data-en="RAISE THE TORCH · LIGHT THE MOUTH">举 起 火 把 · 照 亮 洞 口</div>
   </section>
@@ -253,6 +345,7 @@
     <h2 class="reveal">一座专门用来“遗忘”的洞</h2>
     <p class="lead reveal">在所有已知的洞窟遗产里,忘梦洞是异类。它不为居住、不为埋葬、不为修行,而据传——只为一件事:让人把梦交出来。</p>
     <p class="reveal">地方志称其为“卸梦之所”。传说远古的部族相信,梦是灵魂在夜里偷偷溜出去欠下的债;债积得太多,人会在白昼里恍惚、衰老、忘记自己的名字。于是他们凿出这座洞,让人定期入内,把缠身的梦“说”给石壁听。壁吸了梦,人便清醒地活着。</p>
+    <div class="inscription reveal" data-zh="梦,是灵魂在夜里偷偷溜出去,欠下的债。" data-en="A dream is the debt the soul runs up, slipping out at night.">梦,是灵魂在夜里偷偷溜出去,欠下的债。</div>
     <div class="rule reveal"></div>
     <p class="reveal">真伪已不可考。但洞壁上层层叠压、几乎覆满整个内室的刻画与色块,确实呈现出一种罕见的状态:它们不像在“记录”什么,更像在“倾倒”什么——无序、重复、彼此覆盖,如同无数个梦被反复说出又被新的梦盖住。</p>
 
@@ -293,7 +386,12 @@
     <p class="lead reveal">人类从未停止追问同一个问题——我们从何而来,生命的源头在哪里。而最早试图回答它的,不是文字,是画。</p>
     <p class="reveal">在还没有文字的年代,智人已把目光投向生与死的边界。深洞被视作大地的子宫、幽冥的入口;人在最黑暗处画下野兽、孕育、狩猎与死亡(如本页前一幕的肖维岩洞)——那不是写生,而是一种追问:生命从何处涌出,又往何处回去。最早的壁画,是人类对“源头”最初的凝视。</p>
     <p class="reveal">而一笔画在岩壁上,就脱离了画它的人。三万年后,我们举着光重新看见它,仍能读出那只手的迟疑与笃定。绘画于是成了一种奇异的对话——画的人对尚未到来的人说话,后来的人隔着难以想象的时间回望。它传递的不是信息,而是“曾有人在此、曾如此凝视”这件事本身。</p>
+    <div class="inscription reveal" data-zh="绘画,是对尚未到来的人说话。" data-en="Painting is speaking to those not yet born.">绘画,是对尚未到来的人说话。</div>
     <p class="reveal">这正是一切壁画最深的功能:把易逝的生命,寄存进比生命漫长得多的石头里,交给时间保管,再由后人接手。忘梦洞延续的也是同一件事——无论把梦留下还是把梦卸下,人都在做同一个动作:向时间托付一点自己,相信会有人在另一头,接住。</p>
+    <details class="note">
+      <summary data-zh="🔍 考古札记:现实中的肖维岩洞" data-en="🔍 Field note: the real Chauvet Cave">🔍 考古札记:现实中的肖维岩洞</summary>
+      <p>现实中的肖维-蓬达尔克岩洞(Grotte Chauvet)位于法国阿尔代什省,1994 年由三位洞穴探险者发现。洞中壁画约作于 36,000 年前,是已知最古老、保存最完好的史前艺术之一,绘有狮、犀牛、猛犸、野马等数百个动物形象,并大量使用透视、晕染与"叠绘"技法。为避免呼吸与微生物破坏,真洞不对公众开放;2015 年它被列入联合国教科文组织世界遗产,同年附近建成 1:1 复制洞(Caverne du Pont-d'Arc)供参观。本展中的"忘梦洞"为虚构,但其叠绘形态与"在最深处作画"的设定,正取材于肖维这类真实遗址。</p>
+    </details>
   </section>
 
   <!-- 发现 -->
@@ -309,35 +407,55 @@
     </div>
   </section>
 
-  <!-- 展厅:文物卡 -->
+  <!-- 第三厅 · 横向洞壁漫游(滚动驱动) -->
   <section id="hall">
-    <div class="kicker reveal">第三厅 · 展厅</div>
-    <h2 class="reveal">逐件端详</h2>
-    <p class="lead reveal">六件代表性遗存。每一件,都是一个被石头收下的梦。点击端详。</p>
-    <div class="gallery">
-      <div class="relic reveal" data-detail="壁面以矿物青绿层层叠绘,新画覆旧画十余层。研究者称之为“梦的地层”——越往下,色越沉,梦越久。">
-        <div class="art"><svg viewBox="0 0 100 100"><g stroke="#6fae9a" fill="none" stroke-width="2"><path d="M10 70 Q30 30 50 60 T90 50"/><path d="M10 80 Q35 50 55 75 T92 65" opacity=".6"/><path d="M15 60 Q40 20 60 50" opacity=".4"/></g></svg></div>
-        <div class="meta"><div class="tag">壁画 · MURAL</div><h3>叠梦壁</h3><p>覆盖式叠绘 · 矿物青绿</p></div>
-      </div>
-      <div class="relic reveal" data-detail="一组掌印,大小不一,围成环形。或为入洞者“以手交梦”的仪式痕迹;掌心多有反复按压的磨光。">
-        <div class="art"><svg viewBox="0 0 100 100"><g fill="#c9a24b" opacity=".85"><path d="M50 30c-4 0-5 5-5 9v6h-2v-8c0-4-1-7-4-7s-4 3-4 7v12c0 12 6 20 15 20s15-8 15-20v-8c0-4-1-7-4-7s-4 3-4 7v4h-2v-6c0-4-1-9-4-9z"/></g></svg></div>
-        <div class="meta"><div class="tag">遗痕 · TRACE</div><h3>交梦掌印</h3><p>环形排布 · 掌心磨光</p></div>
-      </div>
-      <div class="relic reveal" data-detail="带孔石片,孔缘光滑。推测以绳系于洞顶,风过成声。或为“以声唤梦出窍”的器物——洞内至今有微弱风鸣。">
-        <div class="art"><svg viewBox="0 0 100 100"><g fill="none" stroke="#e7c982" stroke-width="2"><ellipse cx="50" cy="50" rx="26" ry="34"/><circle cx="50" cy="34" r="5" fill="#0a0908"/><path d="M50 12 V20" /></g></svg></div>
-        <div class="meta"><div class="tag">器物 · OBJECT</div><h3>鸣梦石</h3><p>悬挂吹奏 · 风鸣残响</p></div>
-      </div>
-      <div class="relic reveal" data-detail="刻满未释读符号的石碑残块。符号不重复者极少,疑非文字,而是“每个梦各一形”的记号系统。即洞口残碑出处。">
-        <div class="art"><svg viewBox="0 0 100 100"><g stroke="#c9a24b" stroke-width="2" fill="none"><rect x="28" y="14" width="44" height="72" rx="3"/><path d="M38 30h24M38 42h18M38 54h24M38 66h14" opacity=".8"/></g></svg></div>
-        <div class="meta"><div class="tag">铭刻 · STELE</div><h3>残碑</h3><p>未释符号 · 一梦一形</p></div>
-      </div>
-      <div class="relic reveal" data-detail="洞底凹槽存有矿物颜料结块:青绿、赭红、骨白。三色构成全洞用色基调,均取自洞窟所在山体。">
-        <div class="art"><svg viewBox="0 0 100 100"><g><circle cx="38" cy="44" r="16" fill="#2f5d52"/><circle cx="60" cy="42" r="14" fill="#a8482f" opacity=".9"/><circle cx="50" cy="62" r="13" fill="#e9e1cf" opacity=".85"/></g></svg></div>
-        <div class="meta"><div class="tag">材料 · PIGMENT</div><h3>三色颜料</h3><p>青绿·赭红·骨白</p></div>
-      </div>
-      <div class="relic reveal" data-detail="洞窟最深处的一面空壁,从未被绘过。研究者命名“留白壁”。一说留给最后一人;一说,有些梦不必交出。">
-        <div class="art"><svg viewBox="0 0 100 100"><rect x="22" y="20" width="56" height="60" rx="2" fill="none" stroke="#9c9c8c" stroke-width="1.5" stroke-dasharray="4 5"/></svg></div>
-        <div class="meta"><div class="tag">空间 · VOID</div><h3>留白壁</h3><p>从未绘制 · 深处尽头</p></div>
+    <div class="walk-intro">
+      <div class="kicker reveal">第三厅 · 展厅</div>
+      <h2 class="reveal">提灯,沿壁而行</h2>
+      <p class="lead reveal">向下滚动,光便沿着洞壁移动。六件遗存依次从黑暗里浮现——走到谁面前,谁就被照亮。点击,凑近端详。</p>
+      <details class="note">
+        <summary data-zh="🔍 考古札记:洞窟艺术里的三色从何而来" data-en="🔍 Field note: where cave-art’s three colors came from">🔍 考古札记:洞窟艺术里的三色从何而来</summary>
+        <p>史前洞窟艺术的用色其实非常有限,几乎都来自就地可取的矿物:赭红与黄褐来自含铁的赭石(赤铁矿、针铁矿),黑色多取自二氧化锰或木炭,白色则来自高岭土或方解石。先民将矿石研磨成粉,以水、唾液或动物脂肪调和,再用手指、苔藓、咀嚼过的木棒涂抹,或含在口中向手背喷吹形成"负像手印"。本展"三色颜料"(青绿·赭红·骨白)即据此设定——青绿在真实旧石器壁画中罕见,是为这座虚构洞窟特意添加的一笔。</p>
+      </details>
+    </div>
+    <div class="walk-stage">
+      <div class="walk-sticky">
+        <div class="wall-bg"></div>
+        <div class="torch-glow"></div>
+        <div class="walk-track">
+          <div class="station" data-detail="壁面以矿物青绿层层叠绘,新画覆旧画十余层。研究者称之为“梦的地层”——越往下,色越沉,梦越久。">
+            <div class="num">壹</div>
+            <div class="art"><svg viewBox="0 0 100 100"><g stroke="#6fae9a" fill="none" stroke-width="2"><path d="M10 70 Q30 30 50 60 T90 50"/><path d="M10 80 Q35 50 55 75 T92 65" opacity=".6"/><path d="M15 60 Q40 20 60 50" opacity=".4"/></g></svg></div>
+            <div class="meta"><div class="tag">壁画 · MURAL</div><h3>叠梦壁</h3><p>覆盖式叠绘 · 矿物青绿</p><span class="enter">点击端详 →</span></div>
+          </div>
+          <div class="station" data-detail="一组掌印,大小不一,围成环形。或为入洞者“以手交梦”的仪式痕迹;掌心多有反复按压的磨光。">
+            <div class="num">贰</div>
+            <div class="art"><svg viewBox="0 0 100 100"><g fill="#c9a24b" opacity=".85"><path d="M50 30c-4 0-5 5-5 9v6h-2v-8c0-4-1-7-4-7s-4 3-4 7v12c0 12 6 20 15 20s15-8 15-20v-8c0-4-1-7-4-7s-4 3-4 7v4h-2v-6c0-4-1-9-4-9z"/></g></svg></div>
+            <div class="meta"><div class="tag">遗痕 · TRACE</div><h3>交梦掌印</h3><p>环形排布 · 掌心磨光</p><span class="enter">点击端详 →</span></div>
+          </div>
+          <div class="station" data-detail="带孔石片,孔缘光滑。推测以绳系于洞顶,风过成声。或为“以声唤梦出窍”的器物——洞内至今有微弱风鸣。">
+            <div class="num">叁</div>
+            <div class="art"><svg viewBox="0 0 100 100"><g fill="none" stroke="#e7c982" stroke-width="2"><ellipse cx="50" cy="50" rx="26" ry="34"/><circle cx="50" cy="34" r="5" fill="#0a0908"/><path d="M50 12 V20" /></g></svg></div>
+            <div class="meta"><div class="tag">器物 · OBJECT</div><h3>鸣梦石</h3><p>悬挂吹奏 · 风鸣残响</p><span class="enter">点击端详 →</span></div>
+          </div>
+          <div class="station" data-detail="刻满未释读符号的石碑残块。符号不重复者极少,疑非文字,而是“每个梦各一形”的记号系统。即洞口残碑出处。">
+            <div class="num">肆</div>
+            <div class="art"><svg viewBox="0 0 100 100"><g stroke="#c9a24b" stroke-width="2" fill="none"><rect x="28" y="14" width="44" height="72" rx="3"/><path d="M38 30h24M38 42h18M38 54h24M38 66h14" opacity=".8"/></g></svg></div>
+            <div class="meta"><div class="tag">铭刻 · STELE</div><h3>残碑</h3><p>未释符号 · 一梦一形</p><span class="enter">点击端详 →</span></div>
+          </div>
+          <div class="station" data-detail="洞底凹槽存有矿物颜料结块:青绿、赭红、骨白。三色构成全洞用色基调,均取自洞窟所在山体。">
+            <div class="num">伍</div>
+            <div class="art"><svg viewBox="0 0 100 100"><g><circle cx="38" cy="44" r="16" fill="#2f5d52"/><circle cx="60" cy="42" r="14" fill="#a8482f" opacity=".9"/><circle cx="50" cy="62" r="13" fill="#e9e1cf" opacity=".85"/></g></svg></div>
+            <div class="meta"><div class="tag">材料 · PIGMENT</div><h3>三色颜料</h3><p>青绿·赭红·骨白</p><span class="enter">点击端详 →</span></div>
+          </div>
+          <div class="station" data-detail="洞窟最深处的一面空壁,从未被绘过。研究者命名“留白壁”。一说留给最后一人;一说,有些梦不必交出。">
+            <div class="num">陆</div>
+            <div class="art"><svg viewBox="0 0 100 100"><rect x="22" y="20" width="56" height="60" rx="2" fill="none" stroke="#9c9c8c" stroke-width="1.5" stroke-dasharray="4 5"/></svg></div>
+            <div class="meta"><div class="tag">空间 · VOID</div><h3>留白壁</h3><p>从未绘制 · 深处尽头</p><span class="enter">点击端详 →</span></div>
+          </div>
+        </div>
+        <div class="wall-fog"></div>
+        <div class="walk-progress" data-label="沿壁前行"><i></i></div>
       </div>
     </div>
   </section>
@@ -405,6 +523,11 @@ const DICT={
 "一座专门用来“遗忘”的洞":"A cave built only to forget",
 "它如何重新被人记起":"How it came to be remembered again",
 "逐件端详":"Examine each, up close",
+"提灯,沿壁而行":"Take a light, walk the wall",
+"向下滚动,光便沿着洞壁移动。六件遗存依次从黑暗里浮现——走到谁面前,谁就被照亮。点击,凑近端详。":"Scroll down and the light travels along the cave wall. Six relics surface from the dark one by one — whoever you reach is lit. Click to come closer.",
+"点击端详 →":"EXAMINE →",
+"现实中的肖维-蓬达尔克岩洞(Grotte Chauvet)位于法国阿尔代什省,1994 年由三位洞穴探险者发现。洞中壁画约作于 36,000 年前,是已知最古老、保存最完好的史前艺术之一,绘有狮、犀牛、猛犸、野马等数百个动物形象,并大量使用透视、晕染与“叠绘”技法。为避免呼吸与微生物破坏,真洞不对公众开放;2015 年它被列入联合国教科文组织世界遗产,同年附近建成 1:1 复制洞(Caverne du Pont-d'Arc)供参观。本展中的“忘梦洞”为虚构,但其叠绘形态与“在最深处作画”的设定,正取材于肖维这类真实遗址。":"The real Chauvet–Pont-d’Arc Cave sits in the Ardèche, France, found in 1994 by three cavers. Its paintings, made some 36,000 years ago, are among the oldest and best-preserved prehistoric art known — hundreds of lions, rhinos, mammoths and wild horses, rendered with perspective, shading and overpainting. To protect it from breath and microbes the real cave is closed to the public; it became a UNESCO World Heritage Site in 2015, the same year a full-scale replica (Caverne du Pont-d’Arc) opened nearby. The “Wangmengdong” of this exhibition is fictional, but its overpainted layers and its “painting in the deepest dark” are drawn from real sites like Chauvet.",
+"史前洞窟艺术的用色其实非常有限,几乎都来自就地可取的矿物:赭红与黄褐来自含铁的赭石(赤铁矿、针铁矿),黑色多取自二氧化锰或木炭,白色则来自高岭土或方解石。先民将矿石研磨成粉,以水、唾液或动物脂肪调和,再用手指、苔藓、咀嚼过的木棒涂抹,或含在口中向手背喷吹形成“负像手印”。本展“三色颜料”(青绿·赭红·骨白)即据此设定——青绿在真实旧石器壁画中罕见,是为这座虚构洞窟特意添加的一笔。":"The palette of prehistoric cave art was in fact very limited, almost all from locally available minerals: reds and ochres from iron-rich ochre (hematite, goethite), blacks from manganese dioxide or charcoal, whites from kaolin or calcite. People ground the stone to powder, bound it with water, saliva or animal fat, and applied it with fingers, moss or chewed sticks — or held it in the mouth and sprayed it over a hand to make a “negative handprint.” This show’s three pigments (green · ochre · bone-white) follow that basis — green being rare in real Paleolithic murals, a deliberate touch added for this fictional cave.",
 "卸梦如何发生":"How the unburdening happened",
 "一座古洞,对今天说了什么":"What an ancient cave says to today",
 "在离开前,卸下一个梦":"Before you leave, set down a dream",
@@ -435,7 +558,7 @@ const DICT={
 };
 // 富文本/属性元素另行处理
 function applyLang(){
-  document.querySelectorAll('.kicker,h2,.subhead,.lead,section p,.tl-item .yr,.tl-item h4,nav a,.relic .tag,.relic .meta h3,.relic .meta p,#releaseBtn,.scroll-hint').forEach(el=>{
+  document.querySelectorAll('.kicker,h2,.subhead,.lead,section p,.tl-item .yr,.tl-item h4,nav a,.station .tag,.station .meta h3,.station .meta p,.station .enter,#releaseBtn,.scroll-hint').forEach(el=>{
     if(!el.dataset.zh0){el.dataset.zh0=el.innerHTML;}
     const zhTxt=el.dataset.zh0.replace(/<[^>]+>/g,'').trim();
     if(lang==='en'&&DICT[zhTxt]!==undefined){el.textContent=DICT[zhTxt];}
@@ -448,6 +571,13 @@ function applyLang(){
 }
 const langBtn=document.getElementById('langBtn');
 langBtn.addEventListener('click',()=>{lang=lang==='zh'?'en':'zh';applyLang();});
+
+/* 入洞:火把按钮 → 平滑滚入洞口 */
+const enterBtn=document.getElementById('enterBtn');
+if(enterBtn) enterBtn.addEventListener('click',()=>{
+  const t=document.getElementById('quote')||document.getElementById('origin');
+  if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+});
 
 /* ============ 文物查看器(可旋转·可缩放) ============ */
 const RELIC_EN_DETAIL={
@@ -463,7 +593,7 @@ const viewer=document.getElementById('viewer'), vObj=viewer.querySelector('.obj'
       vP=viewer.querySelector('.vmeta p');
 let rx=-12, ry=24, zoom=1, dragging=false, px, py;
 function vRender(){vObj.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(${zoom})`;}
-document.querySelectorAll('.relic').forEach(r=>{
+document.querySelectorAll('.station').forEach(r=>{
   r.addEventListener('click',()=>{
     const svg=r.querySelector('.art svg').cloneNode(true);
     vObj.innerHTML=''; vObj.appendChild(svg);
@@ -493,29 +623,48 @@ addEventListener('keydown',e=>{if(e.key==='Escape')closeViewer();});
 // 自动微旋(未拖动时)
 setInterval(()=>{if(viewer.classList.contains('open')&&!dragging){ry+=.15;vRender();}},40);
 
-/* ============ 环境音 · 真实洞穴滴水录音 ============ */
-const sndBtn=document.getElementById('sndBtn'), waveEl=sndBtn.querySelector('.wave');
+/* ============ 环境音 · 真实洞穴滴水(圆点波纹 + 音量反馈) ============ */
+const sndToggle=document.getElementById('sndToggle');
 const dripAudio=document.getElementById('dripAudio');
-let sndOn=false, fadeT=null, waveT;
+let sndOn=false, fadeT=null, actx2=null, analyser=null, dataArr=null, rafA=null;
 const MAXVOL=.85;
 function fadeTo(target,done){
   clearInterval(fadeT);
   fadeT=setInterval(()=>{
     const v=dripAudio.volume;
-    if(Math.abs(v-target)<.04){dripAudio.volume=target;clearInterval(fadeT);if(done)done();return;}
+    if(Math.abs(v-target)<.04){dripAudio.volume=Math.min(1,Math.max(0,target));clearInterval(fadeT);if(done)done();return;}
     dripAudio.volume=Math.min(1,Math.max(0, v+(target-v)*.14));
   },50);
 }
-sndBtn.addEventListener('click',()=>{
-  sndOn=!sndOn; sndBtn.classList.toggle('on',sndOn);
+function setupAnalyser(){
+  if(actx2) return;
+  try{
+    actx2=new (window.AudioContext||window.webkitAudioContext)();
+    const src=actx2.createMediaElementSource(dripAudio);
+    analyser=actx2.createAnalyser(); analyser.fftSize=256;
+    dataArr=new Uint8Array(analyser.fftSize);
+    src.connect(analyser); analyser.connect(actx2.destination);
+  }catch(e){analyser=null;}
+}
+function pulse(){
+  if(!sndOn) return;
+  if(analyser){
+    analyser.getByteTimeDomainData(dataArr);
+    let sum=0; for(let i=0;i<dataArr.length;i++){const v=(dataArr[i]-128)/128;sum+=v*v;}
+    const lvl=Math.min(1, Math.sqrt(sum/dataArr.length)*4.5);
+    sndToggle.style.setProperty('--lvl', lvl.toFixed(3));
+  }
+  rafA=requestAnimationFrame(pulse);
+}
+sndToggle.addEventListener('click',()=>{
+  sndOn=!sndOn; sndToggle.classList.toggle('on',sndOn);
   if(sndOn){
-    dripAudio.volume=0;
-    dripAudio.play().catch(()=>{});
-    fadeTo(MAXVOL);
-    let i=0; waveT=setInterval(()=>{waveEl.textContent=' ·:.·'[i++%5];},300);
+    setupAnalyser(); if(actx2&&actx2.state==='suspended') actx2.resume();
+    dripAudio.volume=0; dripAudio.play().catch(()=>{});
+    fadeTo(MAXVOL); pulse();
   }else{
     fadeTo(0,()=>dripAudio.pause());
-    clearInterval(waveT); waveEl.textContent='';
+    cancelAnimationFrame(rafA); sndToggle.style.setProperty('--lvl',0);
   }
 });
 
@@ -546,6 +695,39 @@ document.getElementById('releaseBtn').addEventListener('click',()=>{
     }
   }),{threshold:.5});
   io.observe(q);
+})();
+
+/* ============ 第三厅 · 横向洞壁漫游(滚动驱动) ============ */
+(function(){
+  const stage=document.querySelector('.walk-stage');
+  if(!stage) return;
+  const track=stage.querySelector('.walk-track');
+  const wall=stage.querySelector('.wall-bg');
+  const fill=stage.querySelector('.walk-progress i');
+  const stations=[...track.querySelectorAll('.station')];
+  let max=0, dist=0, ticking=false;
+  function measure(){
+    max=track.scrollWidth - innerWidth;
+    dist=stage.offsetHeight - innerHeight;
+  }
+  function update(){
+    ticking=false;
+    const top=stage.getBoundingClientRect().top;
+    let p=(-top)/dist; p=p<0?0:p>1?1:p;
+    track.style.transform='translateX('+(-p*max).toFixed(1)+'px)';
+    if(wall) wall.style.transform='translateX('+(-p*max*0.4).toFixed(1)+'px)';
+    if(fill) fill.style.width=(p*100).toFixed(1)+'%';
+    // 最靠近画面中心的站点被点亮
+    const cx=innerWidth/2; let best=0, bd=1e9;
+    stations.forEach((s,i)=>{const b=s.getBoundingClientRect();const c=b.left+b.width/2;const d=Math.abs(c-cx);if(d<bd){bd=d;best=i;}});
+    stations.forEach((s,i)=>s.classList.toggle('active',i===best));
+  }
+  function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }
+  addEventListener('scroll',onScroll,{passive:true});
+  addEventListener('resize',()=>{measure();update();});
+  measure(); update();
+  // 字体/图片加载后尺寸可能变,补测一次
+  addEventListener('load',()=>{measure();update();});
 })();
 
 /* ============ 火把 · 揭开黑暗 ============ */
